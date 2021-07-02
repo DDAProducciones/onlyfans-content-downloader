@@ -41,21 +41,8 @@ def download_content():
                 print(f"✔️  [{i}/{profile['content_type']['photo']['count']}] [{subfolders[2].upper()}] = {file_name}")
             except ConnectionError:
                 print("The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.") 
-
-    return 'Download completed.'
-
-    #     print(f"${i}/${photo_count}. Downloading: ${file_name}")
-    #     print('Photo download finished.')
-
-    # i = 0
-    # for url in data['vids']:
-    #            i += 1
-    #            r = requests.get(url, stream=True)
-    #            file_name = url.split('?')[0].split('/')[-1]
-    #            print(i, "Downloading: %s" %  file_name)
-    #            open(f'./videos/{file_name}', 'wb').write(r.content)
-    #            print('Video download finished.')
-    # return 'Hello, world!'
+	print('Photo download finished.')
+    return 'Photo download finished.'
 
 if __name__ == '__main__':
     app.run(debug=True)
