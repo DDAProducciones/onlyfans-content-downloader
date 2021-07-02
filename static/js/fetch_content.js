@@ -17,12 +17,12 @@ function fetchUserInfo () {
 
 	if (config['content_type']['avatar']['download']) {
 		const avatar = document.getElementsByClassName('g-avatar router-link-active online_status_class m-w150')[0].childNodes[0].src
-		if (!avatar) { errors.push(error[1]) } else { profiles[username]['content_type']['avatar'] = { 'content': avatar } }
+		if (!avatar) { errors.push(error[1]) } else { profiles[username]['content_type']['avatar'] = { 'count': 1, 'source': [avatar] } }
 	}
 
 	if (config['content_type']['banner']['download']) {
 		const banner = document.getElementsByClassName('b-profile__header__cover-img')[0].src
-		if (!banner) { errors.push(error[2]) } else { profiles[username]['content_type']['banner'] = { 'content': banner } }
+		if (!banner) { errors.push(error[2]) } else { profiles[username]['content_type']['banner'] = { 'count': 1, 'source': [banner] } }
 	}
 
 	if (config['content_type']['photo']['download']) {
@@ -64,12 +64,8 @@ function fetchPhoto (username, i = 0, 	ii = 0) {
 }
 
 function fetchVideo (username, i = 0, ii = 0) {
-	i++;
-
 	// Base case.
-	if (i === profiles[username]['content_type'].video.count) {
-		return username;
-	}
+	if (i === profiles[username]['content_type'].video.count) { return username; }
 
 	let videos = document.getElementsByClassName('vjs-tech');
 	for (let i = 0; i < videos.length; i++) {
@@ -81,29 +77,62 @@ function fetchVideo (username, i = 0, ii = 0) {
 		}
 	}
 
+	i++;
 	document.getElementsByClassName('pswp__button pswp__button--arrow--right')[0].click();
 	setTimeout(function(){ fetchVideo(username, i, ii) }, config.content_type.video.iter_speed);
 }
 
-const username = fetchUserInfo();
-fetchPhoto(username)
-// fetchVideo(username);
-sendContent(profiles[username], '/download_content');
 
 
 
-// // function scrollToBottom () {
-// // 	if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
-// // 		console.info('Page-load completed.');
-// // 		return true
-// // 	}
-// // 	try {
-// // 		window.scrollTo(0,document.body.scrollHeight);
-// // 		setTimeout(function(){ scrollToBottom(); }, 3000);
-// // 	} catch { return true }
-// // }
 
+function scrollToBottom (top = true) {
+	if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
+		if (top) { scroll(0,0) }
+		console.info(success[4]);
+		return true
+	}
+	try {
+		window.scrollTo(0,document.body.scrollHeight);
+		setTimeout(function(){ scrollToBottom(); }, config.page_scroll.iter_speed);
+	} catch { return true }
+}
 
-// function fetchContent () {
+function fetchContent () {
+	console.log(message[5])
+	const username = fetchVideo(fetchPhoto(fetchUserInfo()))
+	return sendContent(profiles[username], '/download_content');
+}
 
-// }
+function autoNavigator () {
+	const route = window.location.pathname.split('/').pop()
+	switch (route) {
+		// Path: /<username>
+		case window.location.pathname.split('/')[1]:
+			document.getElementsByClassName('b-tabs__nav__link__counter-title')[1].click()
+			document.getElementsByClassName('b-tabs__nav__text')[1].click()
+			scrollToBottom()
+			console.log('Good')
+		    document.getElementsByClassName('b-photos__item__img')[0].click()
+			// username = fetchUserInfo()
+			// fetchPhoto(username)
+
+			// document.getElementsByClassName('b-tabs__nav__text')[2].click()
+			// const videoEle = document.getElementsByClassName('b-photos__item__img')[0]
+			// if (videoEle) { scrollToBottom(); fetchVideo(username); videoEle.click()}
+			break;
+
+	// 	// Path: /media
+	// 	case document.getElementsByClassName('b-tabs__nav__text')[0].innerText.split(' ')[0]:
+	// 	  break ;
+		
+	// 	// Path: /photos
+	// 	case document.getElementsByClassName('b-tabs__nav__text')[1].innerText.split(' ')[0]:
+	// 	  break;
+		
+	// 	// Path: /videos
+	// 	case document.getElementsByClassName('b-tabs__nav__text')[2].innerText.split(' ')[0]:
+	// 		break;
+	  } 
+}
+autoNavigator()

@@ -28,7 +28,9 @@ export default {
 			0: '✔️ Fetch completed successfully!',
 			1: '✔️ User information fetch completed successfully!',
 			2: '✔️ Photos fetched successfully!',
-			3: '✔️ Videos fetched successfully!'
+			3: '✔️ Videos fetched successfully!',
+			4: '✔️ Page loaded successfully!',
+			5: '✔️ Fetched content sent over to the server to start the download.'
 		},
 		"error": {
 			0: '❌ Could not fetch username, download failed.',
