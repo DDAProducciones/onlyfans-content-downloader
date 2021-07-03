@@ -86,22 +86,23 @@ function fetchVideo (username, i = 0, ii = 0) {
 
 
 
-function scrollToBottom (top = true) {
-	if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
-		if (top) { scroll(0,0) }
-		console.info(success[4]);
-		return true
-	}
-	try {
-		window.scrollTo(0,document.body.scrollHeight);
-		setTimeout(function(){ scrollToBottom(); }, config.page_scroll.iter_speed);
-	} catch { return true }
-}
+
 
 function fetchContent () {
 	console.log(message[5])
 	const username = fetchVideo(fetchPhoto(fetchUserInfo()))
 	return sendContent(profiles[username], '/download_content');
+}
+
+function pause () {
+	return new Promise ((resolve, reject) => { setTimeout(() => { resolve(true) }, config.page_scroll.iter_speed) })
+}
+
+async function scrollToBottom () {
+	do {
+		window.scrollTo(0,document.body.scrollHeight);
+		await pause()
+	} while (window.innerHeight + window.pageYOffset < document.body.offsetHeight);
 }
 
 function autoNavigator () {
@@ -110,16 +111,26 @@ function autoNavigator () {
 		// Path: /<username>
 		case window.location.pathname.split('/')[1]:
 			document.getElementsByClassName('b-tabs__nav__link__counter-title')[1].click()
+			console.log('2')
+	
 			document.getElementsByClassName('b-tabs__nav__text')[1].click()
-			scrollToBottom()
-			console.log('Good')
-		    document.getElementsByClassName('b-photos__item__img')[0].click()
-			// username = fetchUserInfo()
-			// fetchPhoto(username)
+			console.log('3');
 
-			// document.getElementsByClassName('b-tabs__nav__text')[2].click()
-			// const videoEle = document.getElementsByClassName('b-photos__item__img')[0]
-			// if (videoEle) { scrollToBottom(); fetchVideo(username); videoEle.click()}
+			(async () => {
+				await scrollToBottom();
+				username = fetchUserInfo()
+				document.getElementsByClassName('b-photos__item__img')[0].click();
+				fetchPhoto(username)
+
+				// Close picture window.
+				document.getElementsByClassName('pswp__button pswp__button--close')[0].click();
+
+				document.getElementsByClassName('b-tabs__nav__text')[2].click()
+				const videoEle = document.getElementsByClassName('b-photos__item__img')[0]
+				if (videoEle) { scrollToBottom(); fetchVideo(username); videoEle.click()}
+			  })();
+
+
 			break;
 
 	// 	// Path: /media
