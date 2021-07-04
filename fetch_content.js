@@ -1,6 +1,6 @@
 // Adjustable config file.
 const config = {
-	"host": { "base_url": "127.0.0.1", "port": 5000 },
+	"host": { "protocol": "http:", "base_url": "127.0.0.1", "port": 5000 },
 	"page_scroll": { "iter_speed": 3000 },
 	"content_type": {
 		"avatar": {
@@ -47,7 +47,8 @@ const config = {
 // Send user content to backend to download.
 function sendContent(profile, route = '/') {
 	const req = new XMLHttpRequest();
-	req.open("POST", `http://127.0.0.1:5000${route}`);
+	req.open("POST", `${config.host.protocol}//${config.host.base_url}:${config.host.port}${route}`);
+	console.info(`Request sent to: ${config.host.base_url}:${config.host.port}${route}`)
 	req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 	req.send(JSON.stringify(profile));
 	return req.onload = function(rv) { console.info(rv.target.response)}
@@ -145,7 +146,7 @@ async function scrollToBottom () {
 	do {
 		window.scrollTo(0,document.body.scrollHeight);
 		await pause(config.page_scroll.iter_speed);
-	} while (window.innerHeight + window.pageYOffset < document.body.offsetHeight);
+	} while (Math.round(window.innerHeight + window.pageYOffset) < document.body.offsetHeight);
 	scroll(0,0);
 }
 
@@ -169,13 +170,9 @@ function autoNavigator () {
 
 				// Video tab.
 				document.getElementsByClassName('b-tabs__nav__text')[2].click();
-
 				await scrollToBottom();
-
-				// First video.
-				document.getElementsByClassName('b-photos__item__img')[0].click();
-				
-				await fetchVideo(username);
+				const videoAvailable = document.getElementsByClassName('b-photos__item__img');
+				if (videoAvailable.length) { videoAvailable[0].click(); await fetchVideo(username); }
 				
 				// Send content to backend for download.
 				sendContent(profiles[username], '/download_content');

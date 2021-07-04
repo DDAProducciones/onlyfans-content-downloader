@@ -3,13 +3,13 @@ from flask_cors import CORS
 import requests
 import os
 
+
 app = Flask(__name__)
 CORS(app)
 
 @app.route('/download_content', methods = ['POST'])
 def download_content():
     profile = request.get_json()
-
     # Make file directories if not already existant.
     file_path = f"./subscription/{profile['username']}"
     
@@ -37,7 +37,6 @@ def download_content():
                     print(f"✔️  [{i}/{profile['content_type'][k]['count']}] [{k.upper()}] = {file_name}")
             except ConnectionError:
                 print("The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.") 
-        print('Photo download finished.')
     return 'Photo download finished.'
 
 if __name__ == '__main__':
