@@ -1,17 +1,10 @@
-import flask
-from flask.helpers import url_for
-from flask.templating import render_template
-import requests
-import os
 from flask import Flask, request
 from flask_cors import CORS
+import requests
+import os
 
 app = Flask(__name__)
 CORS(app)
-
-@app.route('/')
-def index():
-    return render_template('index.html')
 
 @app.route('/download_content', methods = ['POST'])
 def download_content():

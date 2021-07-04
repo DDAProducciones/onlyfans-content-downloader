@@ -13,8 +13,22 @@
 - Does not break easily and requires less maintenance.
 - No cookie, session or other information required.
 
-## Requirements
-Still in progress, I'm still alternating/changing the code so the dependencies/requirements may change fast. Because of this I decided to stall writing about it until I release a v1 even though it already works stably.
+## Dependencies
+1. [Python](https://www.python.org/downloads/)
+2. `pip install flask`
+3. `pip install flask_cors`
+4. `pip install requests`
 
-## Setup
-Still in progress... (already works, but want to make the code smaller and remove some currently necessary setup steps to make it even easier. This will save me from writing the setup multiple times.)
+## Usage
+Make sure to follow the steps precisely and in chronological order!
+1. Open the Python file in Visual Studio and run it (CTRL + ALT + N). 
+2. Go to the Onlyfans profile you wish to download from via your browser. Example: https://onlyfans.com/username_of_creator
+3. Select all the Javascript code (CTRL + A), then copy (CTRL + C) and paste it (CTRL + V) in your web console (SHIFT + CTRL + I) or (F12).
+That's it! The download should now start.
+
+# Known bugs/issues/deficiencies
+The following list does not impact the actual functionality. This means that all the content will still downloads as intended. Consider these minor issues that only affect the user experience at most.
+1. Code is redundant in some places. Does not impact the download process!
+2. JS code is unnecessarily iterating over content that has already been visited. Does not impact the download process!
+3. When downloading, numerator does not match denominator after completion.
+4. Not all fetched content always logs in the web console.
