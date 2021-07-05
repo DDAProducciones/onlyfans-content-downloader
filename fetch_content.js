@@ -1,3 +1,4 @@
+{
 // Adjustable config file.
 const config = {
 	"host": { "protocol": "http:", "base_url": "127.0.0.1", "port": 5000 },
@@ -56,8 +57,6 @@ function sendContent(profile, route = '/') {
 
 // Store user profile data.
 const profiles = {}
-
-// Error dictionary.
 const error = config['message']['error']
 const success = config['message']['success']
 
@@ -99,9 +98,7 @@ function fetchUserInfo () {
 }
 
 // Pause async codes.
-function pause (delay) {
-	return new Promise ((resolve, reject) => { setTimeout(() => { resolve(true) }, delay) })
-}
+function pause (delay) { return new Promise ((resolve, reject) => { setTimeout(() => { resolve(true) }, delay) }) }
 
 // Fetch photos.
 async function fetchPhoto (username) {
@@ -143,11 +140,14 @@ async function fetchVideo (username) {
 
 // Scroll to bottom.
 async function scrollToBottom () {
+	let currentPagePosition = Math.round(window.innerHeight + window.pageYOffset + 1);
 	do {
-		window.scrollTo(0,document.body.scrollHeight);
+		window.scrollTo(0, document.body.scrollHeight);
+		console.info(`⌛ Page load progress: ${currentPagePosition}/${document.body.offsetHeight}`)
 		await pause(config.page_scroll.iter_speed);
-	} while (Math.round(window.innerHeight + window.pageYOffset) < document.body.offsetHeight);
-	scroll(0,0);
+	}
+	while (currentPagePosition < document.body.offsetHeight);
+	scroll(0, 0);
 }
 
 // Auto navigate user content.
@@ -196,3 +196,4 @@ function autoNavigator () {
 }
 
 autoNavigator();
+}
