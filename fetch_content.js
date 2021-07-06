@@ -3,6 +3,7 @@
 const config = {
 	"host": { "protocol": "http:", "base_url": "127.0.0.1", "port": 5000 },
 	"page_scroll": { "iter_speed": 3000 },
+	"page_load": { "iter_speed": 3000 },
 	"content_type": {
 		"avatar": {
 			"download": true,
@@ -18,7 +19,7 @@ const config = {
 		},
 		"video": {
 			"download": true,
-			"iter_speed": 100
+			"iter_speed": 50
 		},
 		"archived": {
 			"download": true,
@@ -101,21 +102,29 @@ function fetchUserInfo () {
 function pause (delay) { return new Promise ((resolve, reject) => { setTimeout(() => { resolve(true) }, delay) }) }
 
 // Fetch photos.
-async function fetchPhoto (username) {
-	let ii = 0; i = 0;
-	do {
-		const photos = document.getElementsByClassName('pswp__img'); i++;
-		for (let i = 0; i < photos.length; i++) {
-			let photo = photos[i];
-			if (photo.src && !profiles[username]['content_type'].photo.source.includes(photo.src)) {
-				profiles[username]['content_type'].photo.source.push(photo.src); ii++;
-				console.info(`✔️ [${ii}/${profiles[username]['content_type'].photo.count}] [PHOTO] = ${photo.src}`);
+function fetchPhoto (username) {
+	return new Promise (async (resolve, reject) => {
+		let ii = 0; i = 0;
+		do {
+			// setTimeout(() => { console.log(document.getElementsByClassName('pswp__img')); }, 2000)
+			const photos = document.getElementsByClassName('pswp__img'); i++;
+			console.log(i)
+			console.error(photos.length, "<------- CONTAINER LENGTH");
+			for (let iii = 0; iii < photos.length; iii++) {
+				console.warn(iii, "<------ INCREMENTER")
+				let photo = photos[iii];
+				console.log(photo.src, "PHOTO FUNC", iii, photo);
+				console.log(profiles[username]['content_type'].photo.source, "<---- profile user")
+				if (photo.src && !profiles[username]['content_type'].photo.source.includes(photo.src)) {
+					profiles[username]['content_type'].photo.source.push(photo.src); ii++;
+					console.info(`✔️ [${ii}/${profiles[username]['content_type'].photo.count}] [PHOTO] = ${photo.src}`);
+				}
 			}
-		}
-		document.getElementsByClassName('pswp__button pswp__button--arrow--right')[0].click();
-		await pause(config.content_type.photo.iter_speed);
-	} while(i !== profiles[username]['content_type'].photo.count)
-	return new Promise((resolve, reject) => { resolve(username) });
+			document.getElementsByClassName('pswp__button pswp__button--arrow--right')[0].click();
+			await pause(config.content_type.photo.iter_speed);
+		} while(i < profiles[username]['content_type'].photo.count)
+		resolve(username);
+	});
 }
 
 // Fetch videos.
@@ -132,7 +141,7 @@ async function fetchVideo (username) {
 		}
 		document.getElementsByClassName('pswp__button pswp__button--arrow--right')[0].click();
 		await pause(config.content_type.video.iter_speed);
-	} while(i !== profiles[username]['content_type'].video.count)
+	} while(i <= profiles[username]['content_type'].video.count)
 	return new Promise((resolve, reject) => { resolve(username) });
 }
 
@@ -155,10 +164,16 @@ function autoNavigator () {
 	document.getElementsByClassName('b-tabs__nav__text')[1].click();
 
 	(async () => {
-		await scrollToBottom();
 		username = fetchUserInfo();
-		document.getElementsByClassName('b-photos__item__img')[0].click();
-		await fetchPhoto(username);
+		
+		document.getElementsByClassName('b-tabs__nav__text')[1].click();
+		await scrollToBottom();
+		const photoAvailable = document.getElementsByClassName('b-photos__item__img');
+		if (photoAvailable.length) {
+			photoAvailable[0].click();
+			await pause(config.page_load.iter_speed);
+			await fetchPhoto(username);
+		}
 
 		// Close picture window.
 		document.getElementsByClassName('pswp__button pswp__button--close')[0].click();
@@ -167,7 +182,11 @@ function autoNavigator () {
 		document.getElementsByClassName('b-tabs__nav__text')[2].click();
 		await scrollToBottom();
 		const videoAvailable = document.getElementsByClassName('b-photos__item__img');
-		if (videoAvailable.length) { videoAvailable[0].click(); await fetchVideo(username); }
+		if (videoAvailable.length) {
+			videoAvailable[0].click();
+			await pause(config.page_load.iter_speed);
+			await fetchVideo(username);
+		}
 		
 		// Send content to backend for download.
 		sendContent(profiles[username], '/download_content');
