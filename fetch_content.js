@@ -108,13 +108,8 @@ function fetchPhoto (username) {
 		do {
 			// setTimeout(() => { console.log(document.getElementsByClassName('pswp__img')); }, 2000)
 			const photos = document.getElementsByClassName('pswp__img'); i++;
-			console.log(i)
-			console.error(photos.length, "<------- CONTAINER LENGTH");
 			for (let iii = 0; iii < photos.length; iii++) {
-				console.warn(iii, "<------ INCREMENTER")
 				let photo = photos[iii];
-				console.log(photo.src, "PHOTO FUNC", iii, photo);
-				console.log(profiles[username]['content_type'].photo.source, "<---- profile user")
 				if (photo.src && !profiles[username]['content_type'].photo.source.includes(photo.src)) {
 					profiles[username]['content_type'].photo.source.push(photo.src); ii++;
 					console.info(`✔️ [${ii}/${profiles[username]['content_type'].photo.count}] [PHOTO] = ${photo.src}`);
