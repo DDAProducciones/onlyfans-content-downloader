@@ -27,8 +27,6 @@ Make sure to follow the steps precisely and in chronological order!
 That's it! The download should now start.
 
 # Known bugs/issues/deficiencies
-The following list does not impact the actual functionality. This means that all the content will still downloads as intended. Consider these minor issues that only affect the user experience at most.
-1. Code is redundant in some places. Does not impact the download process!
-2. JS code is unnecessarily iterating over content that has already been visited. Does not impact the download process!
-3. When downloading, numerator does not match denominator after completion.
-4. Not all fetched content always logs in the web console.
+The following list does not impact the actual functionality. This means that all the content will still downloads as intended. Consider these minor issues that only affect the user experience at m
+1. Code is redundant in some places. Does not impact the download process! Just not optimally coded. You won't really notice though qua speed.
+2. JS code is unnecessarily iterating over content that has already been visited. Does not impact the download process, just makes you wait a couple seconds longer.
