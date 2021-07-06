@@ -102,97 +102,76 @@ function pause (delay) { return new Promise ((resolve, reject) => { setTimeout((
 
 // Fetch photos.
 async function fetchPhoto (username) {
-	let ii = 0;
+	let ii = 0; i = 0;
 	do {
-		ii++;
-		const photos = document.getElementsByClassName('pswp__img');
+		const photos = document.getElementsByClassName('pswp__img'); i++;
 		for (let i = 0; i < photos.length; i++) {
 			let photo = photos[i];
 			if (photo.src && !profiles[username]['content_type'].photo.source.includes(photo.src)) {
-				profiles[username]['content_type'].photo.source.push(photo.src);
+				profiles[username]['content_type'].photo.source.push(photo.src); ii++;
 				console.info(`✔️ [${ii}/${profiles[username]['content_type'].photo.count}] [PHOTO] = ${photo.src}`);
 			}
 		}
 		document.getElementsByClassName('pswp__button pswp__button--arrow--right')[0].click();
 		await pause(config.content_type.photo.iter_speed);
-	} while(ii !== profiles[username]['content_type'].photo.count)
+	} while(i !== profiles[username]['content_type'].photo.count)
 	return new Promise((resolve, reject) => { resolve(username) });
 }
 
 // Fetch videos.
 async function fetchVideo (username) {
-	let ii = 0;
+	let ii = 0; i = 0;
 	do {
-		ii++;
-		let videos = document.getElementsByClassName('vjs-tech');
+		let videos = document.getElementsByClassName('vjs-tech'); i++;
 		for (let i = 0; i < videos.length; i++) {
 			let video = videos[i];
 			if (video.firstElementChild.src && !profiles[username]['content_type'].video.source.includes(video.firstElementChild.src)) {
-				profiles[username]['content_type'].video.source.push(video.firstElementChild.src);
+				profiles[username]['content_type'].video.source.push(video.firstElementChild.src); ii++;
 				console.info(`✔️ [${ii}/${profiles[username]['content_type'].video.count}] [VIDEO] = ${video.firstElementChild.src}`);
 			}
 		}
 		document.getElementsByClassName('pswp__button pswp__button--arrow--right')[0].click();
 		await pause(config.content_type.video.iter_speed);
-	} while(ii !== profiles[username]['content_type'].video.count)
+	} while(i !== profiles[username]['content_type'].video.count)
 	return new Promise((resolve, reject) => { resolve(username) });
 }
 
 // Scroll to bottom.
-async function scrollToBottom () {
-	let currentPagePosition = Math.round(window.innerHeight + window.pageYOffset + 1);
-	do {
-		window.scrollTo(0, document.body.scrollHeight);
-		console.info(`⌛ Page load progress: ${currentPagePosition}/${document.body.offsetHeight}`)
-		await pause(config.page_scroll.iter_speed);
-	}
-	while (currentPagePosition < document.body.offsetHeight);
-	scroll(0, 0);
-}
+async function scrollToBottom(speed = 3000) {
+	return new Promise (async (resolve, reject) => {
+		do {
+			window.scrollTo(0, document.body.scrollHeight);
+			await pause(speed);
+		}
+		while (Math.round(window.innerHeight + window.pageYOffset + 1) < document.body.offsetHeight);
+		scroll(0, 0);
+		resolve(true);
+	});
+};
 
 // Auto navigate user content.
 function autoNavigator () {
-	const route = window.location.pathname.split('/').pop()
-	switch (route) {
-		// Path: /<username>
-		case window.location.pathname.split('/')[1]:
-			document.getElementsByClassName('b-tabs__nav__link__counter-title')[1].click();
-			document.getElementsByClassName('b-tabs__nav__text')[1].click();
+	document.getElementsByClassName('b-tabs__nav__link__counter-title')[1].click();
+	document.getElementsByClassName('b-tabs__nav__text')[1].click();
 
-			(async () => {
-				await scrollToBottom();
-				username = fetchUserInfo();
-				document.getElementsByClassName('b-photos__item__img')[0].click();
-				await fetchPhoto(username);
+	(async () => {
+		await scrollToBottom();
+		username = fetchUserInfo();
+		document.getElementsByClassName('b-photos__item__img')[0].click();
+		await fetchPhoto(username);
 
-				// Close picture window.
-				document.getElementsByClassName('pswp__button pswp__button--close')[0].click();
+		// Close picture window.
+		document.getElementsByClassName('pswp__button pswp__button--close')[0].click();
 
-				// Video tab.
-				document.getElementsByClassName('b-tabs__nav__text')[2].click();
-				await scrollToBottom();
-				const videoAvailable = document.getElementsByClassName('b-photos__item__img');
-				if (videoAvailable.length) { videoAvailable[0].click(); await fetchVideo(username); }
-				
-				// Send content to backend for download.
-				sendContent(profiles[username], '/download_content');
-			  })();
-
-
-			break;
-
-	// 	// Path: /media
-	// 	case document.getElementsByClassName('b-tabs__nav__text')[0].innerText.split(' ')[0]:
-	// 	  break ;
+		// Video tab.
+		document.getElementsByClassName('b-tabs__nav__text')[2].click();
+		await scrollToBottom();
+		const videoAvailable = document.getElementsByClassName('b-photos__item__img');
+		if (videoAvailable.length) { videoAvailable[0].click(); await fetchVideo(username); }
 		
-	// 	// Path: /photos
-	// 	case document.getElementsByClassName('b-tabs__nav__text')[1].innerText.split(' ')[0]:
-	// 	  break;
-		
-	// 	// Path: /videos
-	// 	case document.getElementsByClassName('b-tabs__nav__text')[2].innerText.split(' ')[0]:
-	// 		break;
-	  }
+		// Send content to backend for download.
+		sendContent(profiles[username], '/download_content');
+	  })();
 }
 
 autoNavigator();

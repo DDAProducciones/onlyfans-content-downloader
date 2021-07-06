@@ -15,6 +15,7 @@ def download_content():
     
     # Make subfolders.
     subfolders = list(profile['content_type'].keys())
+    print('Subfolders', subfolders)
     if not os.path.exists(file_path):
         for subfolder in subfolders:
             os.makedirs(f"{file_path}/{subfolder}")
