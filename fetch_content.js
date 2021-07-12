@@ -18,7 +18,7 @@ clear();
 			'content': () => document.getElementsByClassName('pswp__img'),
 			'source': element => element.src, 
 			'fetch': mediaType => loadPhotoVideo(mediaType),
-			'iter_speed': 100
+			'iter_speed': 0
 		},
 		'videos': {
 			'download': true,
@@ -26,7 +26,7 @@ clear();
 			'content': () => document.getElementsByClassName('vjs-tech'),
 			'source': element => element.firstElementChild.src, 
 			'fetch': mediaType => loadPhotoVideo(mediaType),
-			'iter_speed': 100
+			'iter_speed': 0
 		},
 		'archived': {
 			'download': false,
@@ -68,17 +68,19 @@ clear();
 			const media = config[mediaType]; const profileMedia = profiles[username][mediaType];
 			let progress = 0; let downloaded = 0; media.element().click(); await freeze(1000);
 			await scrollToBottom();
-			firstItem = document.getElementsByClassName('b-photos__item__img')[0]
+			firstItem = document.getElementsByClassName('b-photos__item__img')[0]; let msg = "";
 			if (!firstItem) { console.warn(`⚠️ No downloadable ${mediaType}.`); return resolve(true); }
 			firstItem.click(); await freeze(1000);
-			while (profileMedia.amount >= progress) {
-				progress += 1; for (let i = 0; i < media.content().length; i++) {
+			while (profileMedia.amount > progress) {
+				msg = "]"; progress += 1; for (let i = 0; i < media.content().length; i++) {
 					const item = media.source(media.content()[i]); const profileMediaTypeSources = profileMedia.sources;
 					if (item && !profileMediaTypeSources.includes(item)) {
 						profileMediaTypeSources.push(item); downloaded++;
-						console.info(`✔️ [${mediaType.toUpperCase()}] [${downloaded}/${profileMedia.amount}] - ${item}`);
-					} await freeze(media.iter_speed);
+						msg = `/${downloaded}] ✔️ [${mediaType.toUpperCase()}] - ${item}`
+					}
 					document.getElementsByClassName('pswp__button pswp__button--arrow--right')[0].click();
+					await freeze(media.iter_speed);
+					console.info(`[${progress}/${profileMedia.amount}${msg}`);
 				}
 			}
 			console.warn(`⚠️ ${profileMedia.amount - downloaded} locked/hidden for ${mediaType}.`);
