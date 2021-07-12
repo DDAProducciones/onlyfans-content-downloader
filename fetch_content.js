@@ -1,192 +1,118 @@
+clear();
 {
-// Adjustable config file.
-const config = {
-	"host": { "protocol": "http:", "base_url": "127.0.0.1", "port": 5000 },
-	"page_scroll": { "iter_speed": 3000 },
-	"page_load": { "iter_speed": 3000 },
-	"content_type": {
-		"avatar": {
-			"download": true,
-			"iter_speed": 0
+	// Configuration.
+	const config = {
+		'avatar': {
+			'download': true,
+			'element': () => document.getElementsByClassName('g-avatar router-link-active online_status_class m-w150')[0],
+			'fetch': () => fetchAvatar
 		},
-		"banner": {
-			"download": true,
-			"iter_speed": 0
+		'banner': {
+			'download': true,
+			'element': () => document.getElementsByClassName('b-profile__header__cover-img')[0],
+			'fetch': () => fetchBanner
 		},
-		"photo": {
-			"download": true,
-			"iter_speed": 50 
+		'photos': {
+			'download': true,
+			'element': () => document.getElementsByClassName('b-tabs__nav__text')[1],
+			'content': () => document.getElementsByClassName('pswp__img'),
+			'source': element => element.src, 
+			'fetch': mediaType => loadPhotoVideo(mediaType),
+			'iter_speed': 100
 		},
-		"video": {
-			"download": true,
-			"iter_speed": 50
+		'videos': {
+			'download': true,
+			'element': () => document.getElementsByClassName('b-tabs__nav__text')[2],
+			'content': () => document.getElementsByClassName('vjs-tech'),
+			'source': element => element.firstElementChild.src, 
+			'fetch': mediaType => loadPhotoVideo(mediaType),
+			'iter_speed': 100
 		},
-		"archived": {
-			"download": true,
-			"iter_speed": 50 
+		'archived': {
+			'download': false,
+			'element': () => document.getElementsByClassName('b-tabs__nav__link__counter-title')[2]
 		}
-	},
-	"message": {
-		"success": {
-			0: '✔️ Fetch completed successfully!',
-			1: '✔️ User information fetch completed successfully!',
-			2: '✔️ Photos fetched successfully!',
-			3: '✔️ Videos fetched successfully!',
-			4: '✔️ Page loaded successfully!',
-			5: '✔️ Fetched content sent over to the server to start the download.'
-		},
-		"error": {
-			0: '❌ Could not fetch username, download failed.',
-			1: '❌ Could not fetch avatar, download failed.',
-			2: '❌ Could not fetch banner, download failed.',
-			3: '❌ Could not fetch photo count, download failed.',
-			4: '❌ Could not fetch video count, download failed.',
-			5: '❌ Could not fetch archived count, download failed.'
-		}
-	} 
-}
+	};
 
-// Send user content to backend to download.
-function sendContent(profile, route = '/') {
-	const req = new XMLHttpRequest();
-	req.open("POST", `${config.host.protocol}//${config.host.base_url}:${config.host.port}${route}`);
-	console.info(`Request sent to: ${config.host.base_url}:${config.host.port}${route}`)
-	req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-	req.send(JSON.stringify(profile));
-	return req.onload = function(rv) { console.info(rv.target.response)}
-}
+	// Global variables.
+	const profiles = {}; // Store content-creator storage object.
+	const username = window.location.pathname.split('/')[1]; // Username of content-creator.
+	const media = document.getElementsByClassName('b-tabs__nav__link__counter-title')[1]; // Media tab.
 
-// Store user profile data.
-const profiles = {}
-const error = config['message']['error']
-const success = config['message']['success']
-
-// Fetch user info.
-function fetchUserInfo () {
-	// Fetch username of user subscription.
-	const errors = []
-	const username = document.getElementsByClassName('g-user-username')[2].innerText.slice(1)
-	if (!username) { errors.push(error[0]) }
-	profiles[username] = {'username': username, content_type: {} }
-
-	if (config['content_type']['avatar']['download']) {
-		const avatar = document.getElementsByClassName('g-avatar router-link-active online_status_class m-w150')[0].childNodes[0].src
-		if (!avatar) { errors.push(error[1]) } else { profiles[username]['content_type']['avatar'] = { 'count': 1, 'source': [avatar] } }
+	// Current URL pathname.
+	function pathname () {
+		const pathname = window.location.pathname.split('/');
+		return pathname[pathname.length - 1].toLocaleLowerCase();
 	}
 
-	if (config['content_type']['banner']['download']) {
-		const banner = document.getElementsByClassName('b-profile__header__cover-img')[0].src
-		if (!banner) { errors.push(error[2]) } else { profiles[username]['content_type']['banner'] = { 'count': 1, 'source': [banner] } }
+	// Freeze/pauze/sleep the code for a certain amount of time.
+	function freeze (time = 3000) { return new Promise(resolve => setTimeout(() => { resolve(true); }, time)); }
+
+	// Scroll to the bottom of the page.
+	function scrollToBottom (speed = 3000, backToTop = true) {
+		return new Promise (async resolve => {
+			console.info('⌛ Page scroll in progress...');
+			while ((window.innerHeight + window.pageYOffset + 1) <= document.body.offsetHeight) {
+				window.scrollTo(0, document.body.scrollHeight); await freeze(speed);
+			} if (backToTop) scroll(0, 0); console.info('✔️ Finished scrolling page.'); resolve(true);
+		});
 	}
 
-	if (config['content_type']['photo']['download']) {
-		const photo_count = document.getElementsByClassName('b-tabs__nav__text')[1]
-		if (!photo_count) { errors.push(error[3]) } else { profiles[username]['content_type']['photo'] = { 'count': parseInt(photo_count.innerText.split(' ')[1]), 'source': [] } }	
-	}
+    // Fetch avatar/banner.
+	function fetchAvatar () { profiles[username].avatar.sources.push(config.avatar.element().firstChild.src); } 
+	function fetchBanner () { profiles[username].banner.sources.push(config.banner.element().src); }
 
-	if (config['content_type']['video']['download']) {
-		const video = document.getElementsByClassName('b-tabs__nav__text')[2]
-		if (!video) { errors.push(error[4]) } else { profiles[username]['content_type']['video'] = { 'count': parseInt(video.innerText.split(' ')[1]), 'source': [] } }
-	}
-
-	if (config['content_type']['archived']['download']) {
-		const archived = document.getElementsByClassName('b-tabs__nav__link__counter-title')[2]
-		if (archived) profiles[username]['content_type']['archived'] = { 'count': parseInt(archived.innerText.split(' ')[0]), 'source': [] } 
-	}
-
-	if (errors.length) { errors.forEach(err => console.error(err)); return username}
-	console.log(success[1]); return username;
-}
-
-// Pause async codes.
-function pause (delay) { return new Promise ((resolve, reject) => { setTimeout(() => { resolve(true) }, delay) }) }
-
-// Fetch photos.
-function fetchPhoto (username) {
-	return new Promise (async (resolve, reject) => {
-		let ii = 0; i = 0;
-		do {
-			// setTimeout(() => { console.log(document.getElementsByClassName('pswp__img')); }, 2000)
-			const photos = document.getElementsByClassName('pswp__img'); i++;
-			for (let iii = 0; iii < photos.length; iii++) {
-				let photo = photos[iii];
-				if (photo.src && !profiles[username]['content_type'].photo.source.includes(photo.src)) {
-					profiles[username]['content_type'].photo.source.push(photo.src); ii++;
-					console.info(`✔️ [${ii}/${profiles[username]['content_type'].photo.count}] [PHOTO] = ${photo.src}`);
+	// Fetch photo/video.
+	function loadPhotoVideo(mediaType) {
+		return new Promise (async resolve => {
+			const media = config[mediaType]; const profileMedia = profiles[username][mediaType];
+			let progress = 0; let downloaded = 0; media.element().click(); await freeze(1000);
+			await scrollToBottom();
+			firstItem = document.getElementsByClassName('b-photos__item__img')[0]
+			if (!firstItem) { console.warn(`⚠️ No downloadable ${mediaType}.`); return resolve(true); }
+			firstItem.click(); await freeze(1000);
+			while (profileMedia.amount >= progress) {
+				progress += 1; for (let i = 0; i < media.content().length; i++) {
+					const item = media.source(media.content()[i]); const profileMediaTypeSources = profileMedia.sources;
+					if (item && !profileMediaTypeSources.includes(item)) {
+						profileMediaTypeSources.push(item); downloaded++;
+						console.info(`✔️ [${mediaType.toUpperCase()}] [${downloaded}/${profileMedia.amount}] - ${item}`);
+					} await freeze(media.iter_speed);
+					document.getElementsByClassName('pswp__button pswp__button--arrow--right')[0].click();
 				}
 			}
-			document.getElementsByClassName('pswp__button pswp__button--arrow--right')[0].click();
-			await pause(config.content_type.photo.iter_speed);
-		} while(i < profiles[username]['content_type'].photo.count)
-		resolve(username);
-	});
-}
+			console.warn(`⚠️ ${profileMedia.amount - downloaded} locked/hidden for ${mediaType}.`);
+			profileMedia.amount = downloaded; resolve(true); 
+		});
+	}
 
-// Fetch videos.
-async function fetchVideo (username) {
-	let ii = 0; i = 0;
-	do {
-		let videos = document.getElementsByClassName('vjs-tech'); i++;
-		for (let i = 0; i < videos.length; i++) {
-			let video = videos[i];
-			if (video.firstElementChild.src && !profiles[username]['content_type'].video.source.includes(video.firstElementChild.src)) {
-				profiles[username]['content_type'].video.source.push(video.firstElementChild.src); ii++;
-				console.info(`✔️ [${ii}/${profiles[username]['content_type'].video.count}] [VIDEO] = ${video.firstElementChild.src}`);
-			}
-		}
-		document.getElementsByClassName('pswp__button pswp__button--arrow--right')[0].click();
-		await pause(config.content_type.video.iter_speed);
-	} while(i <= profiles[username]['content_type'].video.count)
-	return new Promise((resolve, reject) => { resolve(username) });
-}
-
-// Scroll to bottom.
-async function scrollToBottom(speed = 3000) {
-	return new Promise (async (resolve, reject) => {
-		do {
-			window.scrollTo(0, document.body.scrollHeight);
-			await pause(speed);
-		}
-		while (Math.round(window.innerHeight + window.pageYOffset + 1) < document.body.offsetHeight);
-		scroll(0, 0);
-		resolve(true);
-	});
-};
-
-// Auto navigate user content.
-function autoNavigator () {
-	document.getElementsByClassName('b-tabs__nav__link__counter-title')[1].click();
-	document.getElementsByClassName('b-tabs__nav__text')[1].click();
-
-	(async () => {
-		username = fetchUserInfo();
+	// Fetch content.
+	function fetchContent () {
+		return new Promise (async resolve => {
+			profiles[username] = {}; const keys = Object.keys(config); const index = keys.indexOf(pathname());
+			if (index !== -1) { [keys[0], keys[index]] = [keys[index], keys[0]]; }
+			for (const o of keys) {
+				if (!config[o].download) continue;
+				profiles[username][o] = {
+					'sources': [],
+					'amount': parseInt(config[o].element().innerText.replace(/\D/g, '')) || 1
+				}; if (config[o].fetch) await config[o].fetch(o);
+			} resolve(true);
+		});
+	}
 		
-		document.getElementsByClassName('b-tabs__nav__text')[1].click();
-		await scrollToBottom();
-		const photoAvailable = document.getElementsByClassName('b-photos__item__img');
-		if (photoAvailable.length) {
-			photoAvailable[0].click();
-			await pause(config.page_load.iter_speed);
-			await fetchPhoto(username);
-		}
-
-		// Close picture window.
+	// Auto clicker.
+	async function autoClicker() {
+		if (!document.getElementsByClassName('b-tabs__nav__item m-current')[0].firstChild.href.split('/')[4]) {
+			media.click(); await freeze(); // Click media tab.
+		} await fetchContent(); await freeze(1000); // Freeze the code so the page can load.
 		document.getElementsByClassName('pswp__button pswp__button--close')[0].click();
+		fetch('http://127.0.0.1:5000/download_content', { // Send content to the server for download.
+			method: 'POST', mode: 'cors', headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ [username]: profiles[username] })
+		}).then(response => response.text()).then(rv => console.info(rv));
+	}
 
-		// Video tab.
-		document.getElementsByClassName('b-tabs__nav__text')[2].click();
-		await scrollToBottom();
-		const videoAvailable = document.getElementsByClassName('b-photos__item__img');
-		if (videoAvailable.length) {
-			videoAvailable[0].click();
-			await pause(config.page_load.iter_speed);
-			await fetchVideo(username);
-		}
-		
-		// Send content to backend for download.
-		sendContent(profiles[username], '/download_content');
-	  })();
-}
-
-autoNavigator();
+	// Execute the code.
+	autoClicker();
 }

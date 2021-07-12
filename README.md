@@ -12,6 +12,7 @@
 - Finds and downloads all of the specified content, not just a part of it.
 - Does not break easily and requires less maintenance.
 - No cookie, session or other information required.
+- Easy to use, set up, and user-friendly.
 
 ## Dependencies
 1. [Python](https://www.python.org/downloads/)
@@ -28,5 +29,4 @@ That's it! The download should now start.
 
 # Known bugs/issues/deficiencies
 The following list does not impact the actual functionality. This means that all the content will still downloads as intended. Consider these minor issues that only affect the user experience at m
-1. Code is redundant in some places. Does not impact the download process! Just not optimally coded. You won't really notice though qua speed.
-2. JS code is unnecessarily iterating over content that has already been visited. Does not impact the download process, just makes you wait a couple seconds longer.
+1. JS code is unnecessarily iterating over content that has already been visited. Does not impact the download process, just makes you wait a couple seconds or up to a minute longer.

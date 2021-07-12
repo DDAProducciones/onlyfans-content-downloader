@@ -10,35 +10,37 @@ CORS(app)
 @app.route('/download_content', methods = ['POST'])
 def download_content():
     profile = request.get_json()
-    # Make file directories if not already existant.
-    file_path = f"./subscription/{profile['username']}"
-    
-    # Make subfolders.
-    subfolders = list(profile['content_type'].keys())
-    print('Subfolders', subfolders)
-    if not os.path.exists(file_path):
-        for subfolder in subfolders:
-            os.makedirs(f"{file_path}/{subfolder}")
+    username = list(profile.keys())[0]
+    values = profile[username]
+    file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "subscription", username)
 
-    # Download content.
-    for k in profile['content_type'].keys():
-        i = 0  # Progress counter, e.g. 4/300, i = 4 in this example.
-        for v in profile['content_type'][k]['source']:
-            i += 1  
-            try:
-                file_name = v.split('?')[0].split('/')[-1]
-                file_existance = os.path.isfile(f'{file_path}/{k}/{file_name}')
-                
-                if file_existance:
-                    print(f"⏭️  [{i}/{profile['content_type'][k]['count']}] [{k.upper()} SKIPPED, ALREADY EXISTS] = {file_name}")
-                    continue
-                else:
+    # Make folders if not present already.
+    if not os.path.exists(file_path):
+        os.makedirs(file_path)
+    subfolders = list(values.keys())
+    for subfolder in subfolders:
+        subfolder_path = os.path.join(file_path, subfolder)
+        if not os.path.exists(subfolder_path):
+            os.makedirs(subfolder_path)
+
+    # Write content to folders.
+    for k in values.keys():
+        i = 0
+        for v in values[k]["sources"]:
+            i += 1
+            file_name = v.split('?')[0].split('/')[-1]
+            download_location = os.path.join(file_path, k, file_name)
+            if os.path.isfile(download_location):
+                print(f"⏭️  [{i}/{values[k]['amount']}] [{k.upper()} SKIPPED, ALREADY EXISTS] = {download_location}")
+                continue
+            else:
+                try:
                     file = requests.get(v, allow_redirects=True)
-                    open(f'{file_path}/{k}/{file_name}', 'ab').write(file.content)
-                    print(f"✔️  [{i}/{profile['content_type'][k]['count']}] [{k.upper()}] = {file_name}")
-            except ConnectionError:
-                print("The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.") 
-    return 'Photo download finished.'
+                    open(download_location, 'wb').write(file.content)
+                    print(f"✔️  [{i}/{values[k]['amount']}] [{k.upper()}] = {download_location}")
+                except ConnectionError:
+                    print("The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.") 
+    return f"✔️ {', '.join(subfolders).capitalize()} finished downloading."
 
 if __name__ == '__main__':
     app.run(debug=True)
