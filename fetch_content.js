@@ -49,7 +49,7 @@ clear();
 	function freeze (time = 3000) { return new Promise(resolve => setTimeout(() => { resolve(true); }, time)); }
 
 	// Scroll to the bottom of the page.
-	function scrollToBottom (speed = 3000, backToTop = true) {
+	function scrollToBottom (speed = 4000, backToTop = true) {
 		return new Promise (async resolve => {
 			console.info('⌛ Page scroll in progress...');
 			while ((window.innerHeight + window.pageYOffset + 1) <= document.body.offsetHeight) {
