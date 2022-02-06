@@ -5,7 +5,7 @@ import os
 
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, allow_headers='*')
 
 @app.route('/download_content', methods = ['POST'])
 def download_content():

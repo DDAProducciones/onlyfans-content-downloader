@@ -4,13 +4,13 @@ clear();
 	const config = {
 		'avatar': {
 			'download': true,
-			'element': () => document.getElementsByClassName('g-avatar router-link-active online_status_class m-w150')[0],
-			'fetch': () => fetchAvatar
+			'element': () => document.getElementsByClassName('g-avatar router-link-active online_status_class m-w100')[0],
+			'fetch': () => fetchAvatar()
 		},
 		'banner': {
 			'download': true,
 			'element': () => document.getElementsByClassName('b-profile__header__cover-img')[0],
-			'fetch': () => fetchBanner
+			'fetch': () => fetchBanner()
 		},
 		'photos': {
 			'download': true,
@@ -33,6 +33,12 @@ clear();
 			'element': () => document.getElementsByClassName('b-tabs__nav__link__counter-title')[2]
 		}
 	};
+
+	// Load next content section of page.
+	function loadContent () {
+		const loadBtn = document.getElementsByClassName('g-btn m-rounded m-block w-100')[0]
+		if (loadBtn) loadBtn.click()
+	}
 
 	// Global variables.
 	const profiles = {}; // Store content-creator storage object.
@@ -59,8 +65,8 @@ clear();
 	}
 
     // Fetch avatar/banner.
-	function fetchAvatar () { profiles[username].avatar.sources.push(config.avatar.element().firstChild.src); } 
-	function fetchBanner () { profiles[username].banner.sources.push(config.banner.element().src); }
+	function fetchAvatar () { profiles[username].avatar.sources.push(config.avatar.element().firstChild.src.replace('thumbs/c144/', '')); }
+	function fetchBanner () { profiles[username].banner.sources.push(config.banner.element().src.replace('thumbs/w480/', '')); }
 
 	// Fetch photo/video.
 	function loadPhotoVideo(mediaType) {
@@ -102,7 +108,7 @@ clear();
 			} resolve(true);
 		});
 	}
-		
+
 	// Auto clicker.
 	async function autoClicker() {
 		if (!document.getElementsByClassName('b-tabs__nav__item m-current')[0].firstChild.href.split('/')[4]) {
