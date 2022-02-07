@@ -93,7 +93,7 @@ clear();
 			profileMedia.amount = downloaded; resolve(true); 
 		});
 	}
-
+ 
 	// Fetch content.
 	function fetchContent () {
 		return new Promise (async resolve => {
