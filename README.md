@@ -10,20 +10,20 @@
 
 ## Features
 - Bulk download all the photos, videos, archives from your OnlyFans-subscription(s).
-- Can be easily configured to only download certain media types or files from the content-creator.
+- Can be easily configured to only download certain media- types or files from the content-creator.
 - Can be easily configured to only download recent/new uploads from the content-creator.
 - Effectively and efficiently downloads the user's content by only downloading media files that you don't have yet.
-- Automatically creates a nicely structured and categorized download folder.
-- Can download user's avatar and header image/photo in raw resolution.
-- Downloads differently from alternative OnlyFans-content scrapers/downloaders by simulating an actual user.
+- Automatically creates a nicely structured and categorized download-folder named 'subscriptions'.
+- Downloads the user's avatar and header image/photo in raw resolution.
+- Downloads differently from alternative OnlyFans-content scrapers/downloaders, by simulating an actual user.
 - Almost no maintenance required unlike other scrapers, because of the unique way that the content is scraped.
 - Less dependencies required in comparison to other scrapers.
 - Less code than alternative scrapers.
 - No cookie, session, login or other information required unlike other scrapers.
 - Easy to use, easy to set up, and user-friendly.
 - Intelligent. Dynamically executes code-blocks based on the page state instead of a static download order. It takes the most effecient route to download the media files based on where the code is executed from.
-- Shows progression in both the frontend and back-end.
-- Shows how many media files are hidden/locked.
+- Shows you the download progression in both the frontend and back-end.
+- Shows how many media files are hidden/locked from you.
 
 ## Dependencies
 1. [Python](https://www.python.org/downloads/)
@@ -33,7 +33,7 @@
 ## Usage
 Make sure to follow the steps precisely and in chronological order!
 
-1. Open the Python file in Visual Studio and run it via "Run Python File in Terminal".
+1. Open the project folder in VSCode, then left-click the Python file and then right-click "Run Python File in Terminal".
 ![Run code in VSCode](https://i.ibb.co/yPRDDpk/py1.png)
 
 2. Go to the Onlyfans profile you wish to download from via your browser (e.g.: https://onlyfans.com/username_of_creator).
@@ -56,4 +56,4 @@ The JS code of this app provides configurations so that the download proces can 
 # Deficiencies
 The following list does not impact the actual functionality. This means that all the content will still downloads as intended. Consider these minor issues that only affect the user experience at minimal.
 1. JS code is unnecessarily iterating over content that has already been visited. Does not impact the download process, just makes you wait longer. An estimation of the delay could be: if you were to download 50 photos, each photo taking 0,2 seconds: 50 * 0,2 = 10 seconds of download time (100%). In worst case scenario, each photo is iterated three times: 50 * 3 * 0,2 = 30 seconds of download time (300%).
-2. The program does not check how much storage capacity is available on your local machine. If you have 10MB of free storage left and have 1GB of content to download, well then the program crashes when full storage capacity is reached.
+2. The program does not check how much storage capacity is available on your local machine. If you have 10Mb of free storage left and have 1GB of content to download, well, then the program will crash when full storage capacity is reached.
