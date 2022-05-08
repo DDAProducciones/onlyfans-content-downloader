@@ -9,8 +9,10 @@ app = Flask(__name__)
 @app.route('/download_content', methods = ['POST'])
 @cross_origin(origins="https://onlyfans.com", methods=["POST"], allow_headers=["Content-Type"])
 def download_content():
+    if request.headers['Content-Type'] != 'application/json;charset=utf-8':
+       return "Cross origin bro? Why u tries to to hax me server...? Plz don't. Thx!!"
+
     profile = request.get_json()
-	
     username = list(profile.keys())[0]
     values = profile[username]
     file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "subscription", username)

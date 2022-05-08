@@ -141,7 +141,7 @@ clear();
 		} await fetchContent(); await freeze(1000); // Freeze the code so the page can load.
 		document.getElementsByClassName('pswp__button pswp__button--close')[0].click();
 		fetch('http://127.0.0.1:5000/download_content', { // Send content to the server for download.
-			method: 'POST', mode: 'cors', headers: { 'Content-Type': 'application/json' },
+			method: 'POST', mode: 'cors', headers: { 'Content-Type': 'application/json;charset=utf-8' },
 			body: JSON.stringify({ [username]: profiles[username] })
 		}).then(response => response.text()).then(rv => console.info(rv));
 	}
