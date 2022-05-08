@@ -45,7 +45,7 @@ Make sure to follow the steps precisely and in chronological order!
 That's it! The download should now start.
 
 ## Configurations
-The JS code of this app provides configurations so that the download proces can be adjusted/altered to more specific needs. See the table below explains the various configurations you can specify for the app. You can also leave the configuration as is, in that case, the app will use the default values. These configurations can be specified for each content type.
+The JS code of this app provides configurations, so that the download proces can be adjusted/altered to more specific needs. See the table below which explains the various configurations you can specify for the app. You can also leave the configuration as is, in that case, the app will use the default values. These configurations can be specified for each content type for an even more specific download configuration.
 | Name | Type | Default | Description |
 | ------ | ------ | ------ | ------ |
 | `download` | boolean | true | `true` allows certain or all content to be downloaded. In contrast, `false` will disallow it. The content types are `avatar`, `banner`, `photos`, `videos`, `archived`. E.g. setting the `download` value for `videos` to `false`, would disallow any videos to be downloaded. |
