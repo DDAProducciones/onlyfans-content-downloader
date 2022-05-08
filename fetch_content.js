@@ -28,7 +28,7 @@ clear();
 		},
 		'videos': {
 			'download': true,
-			'iterationSpeed': 0,
+			'iterationSpeedDelayInSeconds': 0,
 			'scrollIntervalDelayInSeconds': 3,
 			'scrollExtentInPercentage': 100,
 			'content': () => document.getElementsByClassName('vjs-tech'),
