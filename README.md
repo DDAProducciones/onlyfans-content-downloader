@@ -21,7 +21,7 @@
 - Less code than alternative scrapers.
 - No cookie, session, login or other information required unlike other scrapers.
 - Easy to use, easy to set up, and user-friendly.
-- Intelligent. Dynamically executes code-blocks based on the page state instead of a static download order. It takes the most effecient route to download the media files based on where the code is executed from and based on the page state.
+- Intelligent. Dynamically executes code-blocks based on the page state instead of a static download order. It takes the most effecient route to download the media files based on where the code is executed from.
 - Shows progression in both the frontend and back-end.
 - Shows how many media files are hidden/locked.
 
