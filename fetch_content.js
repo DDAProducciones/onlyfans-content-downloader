@@ -14,7 +14,7 @@ clear();
 		},
 		'photos': {
 			'download': true,
-			'iterationSpeedInSeconds': 0,  // How fast the app will iterate over the media content. 0 means instantly.
+			'iterationSpeedDelayInSeconds': 0,  // How fast the app will iterate over the media content. 0 means instantly.
 			'scrollIntervalDelayInSeconds': 3,  // The delay time between each scroll interval.
 			'scrollExtentInPercentage': 100, // How much percentage of the page should be scrolled for.
 			'content': () => document.getElementsByClassName('pswp__img'), // The currently opened grid photo.
@@ -110,7 +110,7 @@ clear();
 						profileMediaTypeSources.push(item); downloaded++;
 					}
 					document.getElementsByClassName('pswp__button pswp__button--arrow--right')[0].click();
-					await freeze(media.iterationSpeedInSeconds * 1000);
+					await freeze(media.iterationSpeedDelayInSeconds * 1000);
 				}
 			}
 			if (config[mediaType].scrollExtentInPercentage !== 100) { console.warn(`⚠️ ${profileMedia.amount - downloaded} undownloaded for ${mediaType} because the max scroll extent for it was set to ${config[mediaType].scrollExtentInPercentage}%.`); }
