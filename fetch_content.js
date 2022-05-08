@@ -16,7 +16,7 @@ clear();
 			'download': true,
 			'iterationSpeedInSeconds': 0,  // How fast the app will iterate over the media content. 0 means instantly.
 			'scrollIntervalDelayInSeconds': 3,  // The delay time between each scroll interval.
-			'scrollExtentInPercentage': 10, // How much percentage of the page should be scrolled for.
+			'scrollExtentInPercentage': 100, // How much percentage of the page should be scrolled for.
 			'content': () => document.getElementsByClassName('pswp__img'), // The currently opened grid photo.
 			'source': element => element.src, 
 			'fetch': mediaType => loadPhotoVideo(mediaType),
@@ -30,7 +30,7 @@ clear();
 			'download': true,
 			'iterationSpeed': 0,
 			'scrollIntervalDelayInSeconds': 3,
-			'scrollExtentInPercentage': 10,
+			'scrollExtentInPercentage': 100,
 			'content': () => document.getElementsByClassName('vjs-tech'),
 			'source': element => element.firstElementChild.src, 
 			'fetch': mediaType => loadPhotoVideo(mediaType),
