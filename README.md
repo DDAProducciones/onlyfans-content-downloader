@@ -22,8 +22,8 @@
 - No cookie, session, login or other information required unlike other scrapers.
 - Easy to use, easy to set up, and user-friendly.
 - Intelligent. Dynamically executes code-blocks based on the page state instead of a static download order. It takes the most effecient route to download the media files based on where the code was executed from and page state.
-- Shows download progression in both the frontend and back-end.
-- Shows how many media files are hidden/locked in the frontend.
+- Shows progression in both the frontend and back-end.
+- Shows how many media files are hidden/locked.
 
 ## Dependencies
 1. [Python](https://www.python.org/downloads/)
