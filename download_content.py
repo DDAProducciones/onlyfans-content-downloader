@@ -7,7 +7,7 @@ import os
 app = Flask(__name__)
 
 @app.route('/download_content', methods = ['POST'])
-@cross_origin(origins="https://onlyfans.com", methods=["POST"], allow_headers=["Content-Type"])
+@cross_origin(origins="https://onlyfans.com", methods="POST", allow_headers="Content-Type")
 def download_content():
     if request.headers['Content-Type'] != 'application/json;charset=utf-8':
        return "Cross origin bro? Why u tries to to hax me server...? Plz don't. Thx!!"
