@@ -1,5 +1,5 @@
 ![OnlyFans ContentDownloader Banner](https://drive.google.com/uc?export=view&id=1Uj8yQ92GPE2--uzEaeMfqECWKTwj8SaF)
-**Disclaimer**: I do not encourage nor support illegally spreading or downloading/scraping a user's content/material without their permission/consent in any sort of way. Any/all potential risks involved regarding your OnlyFans-account are not mine to bare. This project has been developed by me, solely to test and to better my coding-skills. The source-code is also public so that other people can learn from, improve, help with, the source-code. With that being said: enjoy! ~ CameraDesuYo!
+**Disclaimer**: I do not encourage nor support illegally spreading or downloading/scraping a user's content/material without their permission/consent in any sort of way. Any/all potential risks involved regarding your OnlyFans-account are not mine to bare. This project has been developed by me, solely to test and to better my coding-skills. The source-code is also public so that other people can learn from, improve, help with, the source-code. With that being said: enjoy! ~ MassiveSchlong!
 
 # Table of Contents  
 - [Features](#Features)
