@@ -46,5 +46,5 @@ The JS code of this app provides configurations so that the download proces can 
 # Known bugs/issues/deficiencies
 The following list does not impact the actual functionality. This means that all the content will still downloads as intended. Consider these minor issues that only affect the user experience at minimal.
 1. JS code is unnecessarily iterating over content that has already been visited. Does not impact the download process, just makes you wait longer. An estimation of the delay could be: if you were to download 50 photos, each photo taking 0,2 seconds: 50 * 0,2 = 10 seconds of download time (100%). In worst case scenario, each photo is iterated three times: 50 * 3 * 0,2 = 30 seconds of download time (300%).
-2. The program does not check how much storage capacity is available on your local machine. If you have 10MB of free storage left and have 1GB of content to download, well then the program crashes at some point.
+2. The program does not check how much storage capacity is available on your local machine. If you have 10MB of free storage left and have 1GB of content to download, well then the program crashes when full storage capacity is reached.
 
