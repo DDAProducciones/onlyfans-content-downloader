@@ -49,7 +49,7 @@ Make sure to follow the steps precisely and in chronological order!
 That's it! The download should now start.
 
 
-## configurations
+## js-configurations
 The JS code of this app provides configurations, so that the download proces can be adjusted/altered to more specific needs. See the table below which explains the various configurations you can specify for the app. You can also leave the configuration as is, in that case, the app will use the default values. These configurations can be specified for each content type for an even more specific download configuration.
 | Name | Type | Default | Description |
 | ------ | ------ | ------ | ------ |
