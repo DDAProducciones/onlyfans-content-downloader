@@ -6,6 +6,7 @@ import os
 
 app = Flask(__name__)
 
+
 @app.route('/download_content', methods = ['POST'])
 @cross_origin(origins="https://onlyfans.com", methods="POST", allow_headers="Content-Type")
 def download_content():
