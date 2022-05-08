@@ -3,8 +3,11 @@
 
 # Table of Contents  
 - [Features](#Features)
-- [Requirements](#Requirements)
+- [Dependencies](#Dependencies)
 - [Setup](#Setup)
+- [Usage](#Usage)
+- [Deficiencies](#Known bugs/issues/deficiencies)
+
 
 ## Features
 - Bulk download all the photos, videos, archives from your OnlyFans-subscription(s).
