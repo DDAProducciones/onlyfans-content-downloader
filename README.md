@@ -34,7 +34,7 @@
 Make sure to follow the steps precisely and in chronological order!
 
 1. Open the project folder in VSCode, then left-click the Python file and then right-click "Run Python File in Terminal".
-![Run code in VSCode](https://i.ibb.co/yPRDDpk/py1.png)
+![Run code in VSCode](https://drive.google.com/uc?export=view&id=1AwLRsc5I2SI_xwywbxB1V1-K6BQldoqw)
 
 2. Go to the Onlyfans profile you wish to download from via your browser (e.g.: https://onlyfans.com/username_of_creator).
 ![OF user page](https://drive.google.com/uc?export=view&id=17AXfRJEf8_dL875Ic7NJ-cZnAwK7pX67)
