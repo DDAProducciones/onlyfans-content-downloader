@@ -6,7 +6,7 @@
 - [Dependencies](#Dependencies)
 - [Setup](#Setup)
 - [Usage](#Usage)
-- [Deficiencies](#Known bugs/issues/deficiencies)
+- [Deficiencies](#Deficiencies)
 
 
 ## Features
@@ -45,8 +45,7 @@ The JS code of this app provides configurations so that the download proces can 
 | `scrollIntervalDelayInSeconds` | integer | 3 | Delays each scroll to the bottom of the page by `3` seconds. This number depends on how fast the page loads on your machine. How higher the number, how longer each interval is delayed. This is useful on machines that need more time to load the content. In contrast, lowering the number speeds up the scrolling process. This can be risky because if the browser is not able to load all the next scrolled media content, then your download will be incomplete. On the other side, if you machine is able to load the media content fast, then you might want to consider lowering this number to save yourself time. `0` disables the delay altogether.|
 | `scrollExtentInPercentage` | integer | 100 | `100` means 100% (percent). Allows you to download only a portion of the user's media content. E.g. `50` would mean, that the code will download up to 50% of the page content. `100` means 100%, to download all media content. This configuration is useful if you just want the latest uploads from a certain user instead of having to iterate over all the media content again. It allows you to save yourself time.|
 
-# Known bugs/issues/deficiencies
+# Deficiencies
 The following list does not impact the actual functionality. This means that all the content will still downloads as intended. Consider these minor issues that only affect the user experience at minimal.
 1. JS code is unnecessarily iterating over content that has already been visited. Does not impact the download process, just makes you wait longer. An estimation of the delay could be: if you were to download 50 photos, each photo taking 0,2 seconds: 50 * 0,2 = 10 seconds of download time (100%). In worst case scenario, each photo is iterated three times: 50 * 3 * 0,2 = 30 seconds of download time (300%).
 2. The program does not check how much storage capacity is available on your local machine. If you have 10MB of free storage left and have 1GB of content to download, well then the program crashes when full storage capacity is reached.
-
