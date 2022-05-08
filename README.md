@@ -5,7 +5,6 @@
 - [Features](#Features)
 - [Dependencies](#Dependencies)
 - [Setup](#Setup)
-- [Usage](#Usage)
 - [Deficiencies](#Deficiencies)
 
 ## Features
@@ -30,7 +29,7 @@
 2. `pip install flask`
 3. `pip install flask_cors`
 
-## Usage
+## Setup
 Make sure to follow the steps precisely and in chronological order!
 
 1. Open the project folder in VSCode, then left-click the Python file and then right-click "Run Python File in Terminal".
