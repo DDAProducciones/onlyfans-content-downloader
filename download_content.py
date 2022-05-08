@@ -1,6 +1,5 @@
 from flask import Flask, request
 from flask_cors import cross_origin
-import requests
 import os
 
 
@@ -40,7 +39,7 @@ def download_content():
                continue
             else:
                 try:
-                    file = requests.get(v, allow_redirects=True)
+                    file = request.get(v, allow_redirects=True)
                     open(download_location, 'wb').write(file.content)
                     print(f"✔️  [{i}/{values[k]['amount']}] [{k.upper()}] = {download_location}")
                 except ConnectionError:

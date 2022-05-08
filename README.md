@@ -18,7 +18,6 @@
 1. [Python](https://www.python.org/downloads/)
 2. `pip install flask`
 3. `pip install flask_cors`
-4. `pip install requests`
 
 ## Usage
 Make sure to follow the steps precisely and in chronological order!
