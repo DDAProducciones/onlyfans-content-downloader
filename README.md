@@ -8,14 +8,20 @@
 - [Usage](#Usage)
 - [Deficiencies](#Deficiencies)
 
-
 ## Features
 - Bulk download all the photos, videos, archives from your OnlyFans-subscription(s).
-- Downloads differently from alternative OnlyFans-content scrapers/downloaders.
-- Finds and downloads all of the specified content, not just a part of it.
-- Does not break easily and requires less maintenance.
-- No cookie, session or other information required.
-- Easy to use, set up, and user-friendly.
+- Can be easily configured to only download certain media content from the content-creator.
+- Can be easily configured to only download recent/new uploads from the content-creator.
+- Effectively and efficiently downloads the user's content by only downloading media files that you don't have yet.
+- Automatically creates a nicely structured and categorized download folder.
+- Can download user's avatar and header image/photo in raw resolution.
+- Downloads differently from alternative OnlyFans-content scrapers/downloaders by simulating an actual user.
+- Almost no maintenance required unlike other scrapers, because of the unique way that the content is scraped.
+- Less dependencies required in comparison to other scrapers.
+- Less code than alternative scrapers.
+- No cookie, session, login or other information required unlike other scrapers.
+- Easy to use, easy to set up, and user-friendly.
+- Intelligent. Dynamically executes code-blocks based on the page state instead of a static download order. It takes the most effecient route to download the media files based on where the code was executed from and page state.
 
 ## Dependencies
 1. [Python](https://www.python.org/downloads/)
