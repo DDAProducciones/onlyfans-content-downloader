@@ -36,7 +36,7 @@ That's it! The download should now start.
 
 ## Configurations (optional)
 The JS code of this app provides configurations so that the download proces can be adjusted/altered to more specific needs. See the table below explains the various configurations you can specify for the app. You can also leave the configuration as is, in that case, the app will use the default values. These configurations can be specified for each content type.
-| Name | Data type | Default | Description |
+| Name | Type | Default | Description |
 | ------ | ------ | ------ | ------ |
 | `download` | boolean | true | `true` allows certain or all content to be downloaded. In contrast, `false` will disallow it. The content types are `avatar`, `banner`, `photos`, `videos`, `archived`. E.g. setting the `download` value for `videos` to `false`, would disallow any videos to be downloaded. |
 | `iterationSpeedDelayInSeconds` | integer | 0 | `0` delays the iteration speed over the media files (e.g. the photos and videos) by zero seconds. How higher the number (in seconds), how slower the iteration proces happens. Slowing this proces down can be useful if media files fail to load before iteration occurs. Might occur with poor server response times, bandwidth, internet connection, PC speed, browser addons, etc. Do not touch this configuration if you do not encounter issues. |
