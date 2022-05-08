@@ -2,7 +2,6 @@ clear();
 {
 	// Configuration.
 	const config = {
-		'scrollSpeedInSeconds': 4,
 		'avatar': {
 			'download': true,
 			'element': () => document.getElementsByClassName("g-avatar")[3],
@@ -15,27 +14,31 @@ clear();
 		},
 		'photos': {
 			'download': true,
+			'iterationSpeedInSeconds': 0,  // How fast the app will iterate over the media content. 0 means instantly.
+			'scrollIntervalDelayInSeconds': 3,  // The delay time between each scroll interval.
+			'scrollExtentInPercentage': 50, // How much percentage of the page should be scrolled for.
+			'content': () => document.getElementsByClassName('pswp__img'), // The currently opened grid photo.
+			'source': element => element.src, 
+			'fetch': mediaType => loadPhotoVideo(mediaType),
 			'element': () => {  // The "Photo <<N>> button-tab."
 				for(element of document.getElementsByClassName('b-tabs__nav__text')) {
 					if (element.outerText.match("Photo")) return element;
 				}
 			},
-			'content': () => document.getElementsByClassName('pswp__img'), // The currently opened grid photo.
-			'source': element => element.src, 
-			'fetch': mediaType => loadPhotoVideo(mediaType),
-			'iter_speed': 0
 		},
 		'videos': {
 			'download': true,
+			'iterationSpeed': 0,
+			'scrollIntervalDelayInSeconds': 3,
+			'scrollExtentInPercentage': 50,
+			'content': () => document.getElementsByClassName('vjs-tech'),
+			'source': element => element.firstElementChild.src, 
+			'fetch': mediaType => loadPhotoVideo(mediaType),
 			'element': () => {  // The "Photo <<N>> button-tab."
 				for(element of document.getElementsByClassName('b-tabs__nav__text')) {
 					if (element.outerText.match("Video")) return element;
 				}
 			},
-			'content': () => document.getElementsByClassName('vjs-tech'),
-			'source': element => element.firstElementChild.src, 
-			'fetch': mediaType => loadPhotoVideo(mediaType),
-			'iter_speed': 0
 		},
 		'archived': {
 			'download': false,
@@ -64,17 +67,20 @@ clear();
 	function freeze (time = 3000) { return new Promise(resolve => setTimeout(() => { resolve(true); }, time)); }
 
 	// Current page offset height in percentages.
-	function pageYOffsetPercentage() { console.info("⌛", Math.round((window.innerHeight + window.pageYOffset) / document.body.offsetHeight * 100) + "%"); }
+	function pageYOffsetPercentage() { return Math.round((window.innerHeight + window.pageYOffset) / document.body.offsetHeight * 100); }
 	
 	// Scroll to the bottom of the page.
-	function scrollToBottom (scrollSpeedInSeconds, backToTop = true) {
+	function scrollToBottom (scrollIntervalDelayInSeconds, scrollExtentInPercentage = 100, backToTop = true) {
+		let currentPageYOffset = pageYOffsetPercentage();
 		return new Promise (async resolve => {
-			console.info('⌛ Page scroll in progress...');
+			console.info('⌛ Page scroll in progress...'); console.info("⌛", pageYOffsetPercentage() + "%");
 			while ((window.innerHeight + window.pageYOffset) / document.body.offsetHeight * 100 < 99.9) {
-				pageYOffsetPercentage();
-				window.scrollTo(0, document.body.scrollHeight); await freeze(scrollSpeedInSeconds * 1000);
+				const newPageYOffset = pageYOffsetPercentage();
+				if (scrollExtentInPercentage < newPageYOffset) { break; }
+				if (currentPageYOffset < newPageYOffset) { currentPageYOffset = newPageYOffset; console.info("⌛", currentPageYOffset + "%"); }
+				window.scrollTo(0, document.body.scrollHeight); await freeze(scrollIntervalDelayInSeconds * 1000);
 			}
-			pageYOffsetPercentage();
+			console.info("⌛", scrollExtentInPercentage + "%");
 			if (backToTop) scroll(0, 0); console.info('✔️ Finished scrolling page.'); resolve(true);
 		});
 	}
@@ -87,24 +93,28 @@ clear();
 	function loadPhotoVideo(mediaType) {
 		return new Promise (async resolve => {
 			const media = config[mediaType]; const profileMedia = profiles[username][mediaType];
-			let progress = 0; let downloaded = 0; media.element().click(); await freeze(1000);
-			await scrollToBottom(config.scrollSpeedInSeconds);
+			let progress = 0; let currentProgressInPercentage = 0; newProgressInPercentage = 0; let downloaded = 0; media.element().click(); await freeze(1000);
+			await scrollToBottom(config[mediaType].scrollIntervalDelayInSeconds, config[mediaType].scrollExtentInPercentage);
 			firstItem = document.getElementsByClassName('b-photos__item__img')[0]; let msg = "";
 			if (!firstItem) { console.warn(`⚠️ No downloadable ${mediaType}.`); return resolve(true); }
 			firstItem.click(); await freeze(1000);
 			while (profileMedia.amount > progress) {
-				msg = "]"; progress += 1; for (let i = 0; i < media.content().length; i++) {
+				progress += 1; newProgressInPercentage = Math.round(progress / profileMedia.amount * 100);
+				if (newProgressInPercentage > currentProgressInPercentage) {
+					currentProgressInPercentage = newProgressInPercentage;
+					console.info(`⌚ [${mediaType.toUpperCase()}]`, currentProgressInPercentage + "%");
+				}
+				for (let i = 0; i < media.content().length; i++) {
 					const item = media.source(media.content()[i]); const profileMediaTypeSources = profileMedia.sources;
 					if (item && !profileMediaTypeSources.includes(item)) {
 						profileMediaTypeSources.push(item); downloaded++;
-						msg = `/${downloaded}] ✔️ [${mediaType.toUpperCase()}] - ${item}`
 					}
 					document.getElementsByClassName('pswp__button pswp__button--arrow--right')[0].click();
-					await freeze(media.iter_speed);
-					console.info(`[${progress}/${profileMedia.amount}${msg}`);
+					await freeze(media.iterationSpeedInSeconds * 1000);
 				}
 			}
-			console.warn(`⚠️ ${profileMedia.amount - downloaded} locked/hidden for ${mediaType}.`);
+			if (config[mediaType].scrollExtentInPercentage !== 100) { console.warn(`⚠️ ${profileMedia.amount - downloaded} undownloaded for ${mediaType} because the max scroll extent for it was set to ${config[mediaType].scrollExtentInPercentage}%.`); }
+			else { console.warn(`🔒 ${profileMedia.amount - downloaded} locked/hidden for ${mediaType}.`); }
 			profileMedia.amount = downloaded; resolve(true); 
 		});
 	}
