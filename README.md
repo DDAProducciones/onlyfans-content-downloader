@@ -26,7 +26,7 @@ Make sure to follow the steps precisely and in chronological order!
 1. Open the Python file in Visual Studio and run it via "Run Python File in Terminal".
 ![Run code in VSCode](https://i.ibb.co/yPRDDpk/py1.png)
 
-2. Go to the Onlyfans profile you wish to download from via your browser. Example: https://onlyfans.com/username_of_creator
+2. Go to the Onlyfans profile you wish to download from via your browser (e.g.: https://onlyfans.com/username_of_creator).
 ![OF user page](https://drive.google.com/uc?export=view&id=17AXfRJEf8_dL875Ic7NJ-cZnAwK7pX67)
 
 3. Select all the Javascript code (CTRL + A), then copy (CTRL + C) and paste it (CTRL + V) in your web console (SHIFT + CTRL + I) or (F12).
