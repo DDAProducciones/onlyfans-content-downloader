@@ -5,6 +5,7 @@
 - [Features](#Features)
 - [Dependencies](#Dependencies)
 - [Setup](#Setup)
+- [Configurations (optional)](#Configurations)
 - [Deficiencies](#Deficiencies)
 
 ## Features
