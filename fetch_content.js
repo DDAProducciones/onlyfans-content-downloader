@@ -2,9 +2,10 @@ clear();
 {
 	// Configuration.
 	const config = {
+		'scrollSpeedInSeconds': 4,
 		'avatar': {
 			'download': true,
-			'element': () => document.getElementsByClassName('g-avatar router-link-active online_status_class m-w100')[0],
+			'element': () => document.getElementsByClassName("g-avatar")[3],
 			'fetch': () => fetchAvatar()
 		},
 		'banner': {
@@ -14,15 +15,23 @@ clear();
 		},
 		'photos': {
 			'download': true,
-			'element': () => document.getElementsByClassName('b-tabs__nav__text')[1],
-			'content': () => document.getElementsByClassName('pswp__img'),
+			'element': () => {  // The "Photo <<N>> button-tab."
+				for(element of document.getElementsByClassName('b-tabs__nav__text')) {
+					if (element.outerText.match("Photo")) return element;
+				}
+			},
+			'content': () => document.getElementsByClassName('pswp__img'), // The currently opened grid photo.
 			'source': element => element.src, 
 			'fetch': mediaType => loadPhotoVideo(mediaType),
 			'iter_speed': 0
 		},
 		'videos': {
 			'download': true,
-			'element': () => document.getElementsByClassName('b-tabs__nav__text')[2],
+			'element': () => {  // The "Photo <<N>> button-tab."
+				for(element of document.getElementsByClassName('b-tabs__nav__text')) {
+					if (element.outerText.match("Video")) return element;
+				}
+			},
 			'content': () => document.getElementsByClassName('vjs-tech'),
 			'source': element => element.firstElementChild.src, 
 			'fetch': mediaType => loadPhotoVideo(mediaType),
@@ -54,13 +63,19 @@ clear();
 	// Freeze/pauze/sleep the code for a certain amount of time.
 	function freeze (time = 3000) { return new Promise(resolve => setTimeout(() => { resolve(true); }, time)); }
 
+	// Current page offset height in percentages.
+	function pageYOffsetPercentage() { console.info("⌛", Math.round((window.innerHeight + window.pageYOffset) / document.body.offsetHeight * 100) + "%"); }
+	
 	// Scroll to the bottom of the page.
-	function scrollToBottom (speed = 4000, backToTop = true) {
+	function scrollToBottom (scrollSpeedInSeconds, backToTop = true) {
 		return new Promise (async resolve => {
 			console.info('⌛ Page scroll in progress...');
-			while ((window.innerHeight + window.pageYOffset + 1) <= document.body.offsetHeight) {
-				window.scrollTo(0, document.body.scrollHeight); await freeze(speed);
-			} if (backToTop) scroll(0, 0); console.info('✔️ Finished scrolling page.'); resolve(true);
+			while ((window.innerHeight + window.pageYOffset) / document.body.offsetHeight * 100 < 99.9) {
+				pageYOffsetPercentage();
+				window.scrollTo(0, document.body.scrollHeight); await freeze(scrollSpeedInSeconds * 1000);
+			}
+			pageYOffsetPercentage();
+			if (backToTop) scroll(0, 0); console.info('✔️ Finished scrolling page.'); resolve(true);
 		});
 	}
 
@@ -73,7 +88,7 @@ clear();
 		return new Promise (async resolve => {
 			const media = config[mediaType]; const profileMedia = profiles[username][mediaType];
 			let progress = 0; let downloaded = 0; media.element().click(); await freeze(1000);
-			await scrollToBottom();
+			await scrollToBottom(config.scrollSpeedInSeconds);
 			firstItem = document.getElementsByClassName('b-photos__item__img')[0]; let msg = "";
 			if (!firstItem) { console.warn(`⚠️ No downloadable ${mediaType}.`); return resolve(true); }
 			firstItem.click(); await freeze(1000);
