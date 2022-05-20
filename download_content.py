@@ -46,7 +46,7 @@ def download_content():
                 except ConnectionError:
                     print("The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.") 
     
-    fd = f"✅ {', '.join(subfolders).capitalize()} finished downloading.\n⬇️The downloaded content can be found at:\n{file_path}"
+    fd = f"✅ {', '.join(subfolders).capitalize()} finished downloading.\n⬇️ The downloaded content can be found at:\n{file_path}"
     print(fd)
     return fd
 
