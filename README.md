@@ -43,7 +43,7 @@ Make sure to follow the steps precisely and in chronological order!
 2. Go to the Onlyfans profile you wish to download from via your browser (e.g.: https://onlyfans.com/username_of_creator).
 ![OF user page](https://drive.google.com/uc?export=view&id=17AXfRJEf8_dL875Ic7NJ-cZnAwK7pX67)
 
-3. Select all the Javascript code from the 'fetch_content.js' file (CTRL + A), then copy (CTRL + C) and paste it (CTRL + V) in your web console (SHIFT + CTRL + I) or (F12) and press (enter).
+3. Select all the Javascript code from the 'fetch_content.js' file (CTRL + A), then copy (CTRL + C) and paste it (CTRL + V) in your web console (SHIFT + CTRL + I) or (F12) and press (ENTER).
 ![JS Code in browser console](https://drive.google.com/uc?export=view&id=12FbB2T47Lbe3h9jbj7Vh6Ix6w_z67EOX)
 
 That's it! The download should now start.
