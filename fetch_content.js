@@ -140,6 +140,7 @@ clear();
 			media.click(); await freeze(); // Click media tab.
 		} await fetchContent(); await freeze(1000); // Freeze the code so the page can load.
 		document.getElementsByClassName('pswp__button pswp__button--close')[0].click();
+		console.log("↪️ Check the backend code terminal output for the download status.")
 		fetch('http://127.0.0.1:5000/download_content', { // Send content to the server for download.
 			method: 'POST', mode: 'cors', headers: { 'Content-Type': 'application/json;charset=utf-8' },
 			body: JSON.stringify({ [username]: profiles[username] })
