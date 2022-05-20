@@ -15,7 +15,8 @@ def download_content():
     profile = request.get_json()
     username = list(profile.keys())[0]
     values = profile[username]
-    file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "subscription", username)
+    download_folder = "subscription"
+    file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), download_folder, username)
 
     # Make folders if not present already.
     if not os.path.exists(file_path):
@@ -45,7 +46,7 @@ def download_content():
                 except ConnectionError:
                     print("The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.") 
     
-    fd = f"✅ {', '.join(subfolders).capitalize()} finished downloading."
+    fd = f"✅ {', '.join(subfolders).capitalize()} finished downloading.\n⬇️The downloaded content can be found at:\n{file_path}"
     print(fd)
     return fd
 
