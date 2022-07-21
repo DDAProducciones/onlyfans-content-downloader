@@ -68,17 +68,30 @@ clear();
 
 	// Current page offset height in percentages.
 	function pageYOffsetPercentage() { return Math.round((window.innerHeight + window.pageYOffset) / document.body.offsetHeight * 100); }
-	
-	// Scroll to the bottom of the page.
+
+	// Scroll to bottom.
 	function scrollToBottom (scrollIntervalDelayInSeconds, scrollExtentInPercentage = 100, backToTop = true) {
 		let currentPageYOffset = pageYOffsetPercentage();
 		return new Promise (async resolve => {
 			console.info('⌛ Page scroll in progress...'); console.info("⌛", pageYOffsetPercentage() + "%");
-			while ((window.innerHeight + window.pageYOffset) / document.body.offsetHeight * 100 < 99.9) {
+			while ((window.innerHeight + window.pageYOffset) / document.body.offsetHeight * 100 < 99.9 && Boolean(document.getElementsByClassName('b-posts_preloader')[0])) {
+				window.scrollTo(0, document.body.scrollHeight); await freeze(scrollIntervalDelayInSeconds * 1000);
+
+				if (document.getElementsByClassName('b-posts_preloader')[0]) {  // Loading circle-icon
+					console.log('tester 1');
+					continue;
+				}
+
+				else if (document.getElementsByClassName('g-btn m-rounded m-block w-100')[0]) {  // Manual load more content button.
+					console.log('tester 2');
+					document.getElementsByClassName('g-btn m-rounded m-block w-100')[0].click();
+					continue;
+				}
+
+				console.log('tester 3');
 				const newPageYOffset = pageYOffsetPercentage();
 				if (scrollExtentInPercentage < newPageYOffset) { break; }
 				if (currentPageYOffset < newPageYOffset) { currentPageYOffset = newPageYOffset; console.info("⌛", currentPageYOffset + "%"); }
-				window.scrollTo(0, document.body.scrollHeight); await freeze(scrollIntervalDelayInSeconds * 1000);
 			}
 			console.info("⌛", scrollExtentInPercentage + "%");
 			if (backToTop) scroll(0, 0); console.info('✔️ Finished scrolling page.'); resolve(true);
