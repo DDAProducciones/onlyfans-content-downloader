@@ -13,9 +13,9 @@ clear();
 			'fetch': () => fetchBanner()
 		},
 		'photos': {
-			'download': true,
+			'download': false,
 			'iterationSpeedDelayInSeconds': 0,  // How fast the app will iterate over the media content. 0 means instantly.
-			'scrollIntervalDelayInSeconds': 3,  // The delay time between each scroll interval.
+			'scrollIntervalDelayInSeconds': 2,  // The delay time between each scroll interval.
 			'scrollExtentInPercentage': 100, // How much percentage of the page should be scrolled for.
 			'content': () => document.getElementsByClassName('pswp__img'), // The currently opened grid photo.
 			'source': element => element.src, 
@@ -29,7 +29,7 @@ clear();
 		'videos': {
 			'download': true,
 			'iterationSpeedDelayInSeconds': 0,
-			'scrollIntervalDelayInSeconds': 3,
+			'scrollIntervalDelayInSeconds': 0,
 			'scrollExtentInPercentage': 100,
 			'content': () => document.getElementsByClassName('vjs-tech'),
 			'source': element => element.firstElementChild.src, 
@@ -74,23 +74,27 @@ clear();
 		let currentPageYOffset = pageYOffsetPercentage();
 		return new Promise (async resolve => {
 			console.info('⌛ Page scroll in progress...'); console.info("⌛", pageYOffsetPercentage() + "%");
-			while ((window.innerHeight + window.pageYOffset) / document.body.offsetHeight * 100 < 99.9 && Boolean(document.getElementsByClassName('b-posts_preloader')[0])) {
-				window.scrollTo(0, document.body.scrollHeight); await freeze(scrollIntervalDelayInSeconds * 1000);
+			while (true) {
+				window.scrollTo(0, document.body.scrollHeight);
+				await freeze(scrollIntervalDelayInSeconds * 1000);
+				const newPageYOffset = pageYOffsetPercentage();
+				// if (scrollExtentInPercentage < newPageYOffset) { break; }
 
-				if (document.getElementsByClassName('b-posts_preloader')[0]) {  // Loading circle-icon
+				if (document.getElementsByClassName('b-posts_preloader')[0]) {  // Loading circle-icon.
+					if (Boolean(document.getElementsByClassName('infinite-status-prompt')[0].style[0])) {  // When loading circle is hidden (all content is loaded).
+						break;
+					}
 					console.log('tester 1');
 					continue;
 				}
 
-				else if (document.getElementsByClassName('g-btn m-rounded m-block w-100')[0]) {  // Manual load more content button.
+				if (document.getElementsByClassName('g-btn m-rounded m-block w-100')[0]) {  // Manual load more content button.
 					console.log('tester 2');
 					document.getElementsByClassName('g-btn m-rounded m-block w-100')[0].click();
 					continue;
 				}
 
-				console.log('tester 3');
-				const newPageYOffset = pageYOffsetPercentage();
-				if (scrollExtentInPercentage < newPageYOffset) { break; }
+				// Load progression.
 				if (currentPageYOffset < newPageYOffset) { currentPageYOffset = newPageYOffset; console.info("⌛", currentPageYOffset + "%"); }
 			}
 			console.info("⌛", scrollExtentInPercentage + "%");
