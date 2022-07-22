@@ -13,10 +13,10 @@ clear();
 			'fetch': () => fetchBanner()
 		},
 		'photos': {
-			'download': false,
+			'download': true,
 			'iterationSpeedDelayInSeconds': 0,  // How fast the app will iterate over the media content. 0 means instantly.
-			'scrollIntervalDelayInSeconds': 2,  // The delay time between each scroll interval.
-			'scrollExtentInPercentage': 100, // How much percentage of the page should be scrolled for.
+			'scrollIntervalDelayInSeconds': 1,  // The delay time between each scroll interval.
+			'scrollExtentInMinutes': 0, // 0 means download everything.
 			'content': () => document.getElementsByClassName('pswp__img'), // The currently opened grid photo.
 			'source': element => element.src, 
 			'fetch': mediaType => loadPhotoVideo(mediaType),
@@ -24,13 +24,13 @@ clear();
 				for(element of document.getElementsByClassName('b-tabs__nav__text')) {
 					if (element.outerText.match("Photo")) return element;
 				}
-			},
+			}
 		},
 		'videos': {
 			'download': true,
 			'iterationSpeedDelayInSeconds': 0,
 			'scrollIntervalDelayInSeconds': 0,
-			'scrollExtentInPercentage': 100,
+			'scrollExtentInMinutes': 0, // 0 means download everything.
 			'content': () => document.getElementsByClassName('vjs-tech'),
 			'source': element => element.firstElementChild.src, 
 			'fetch': mediaType => loadPhotoVideo(mediaType),
@@ -38,12 +38,12 @@ clear();
 				for(element of document.getElementsByClassName('b-tabs__nav__text')) {
 					if (element.outerText.match("Video")) return element;
 				}
-			},
+			}
 		},
 		'archived': {
 			'download': false,
 			'element': () => document.getElementsByClassName('b-tabs__nav__link__counter-title')[2]
-		}
+		},
 	};
 
 	// Load next content section of page.
@@ -59,7 +59,7 @@ clear();
 
 	// Current URL pathname.
 	function pathname () {
-		const pathname = window.location.pathname.split('/');
+		const pathname = window.location.pathname.split('/').slice(-1)[0];
 		return pathname[pathname.length - 1].toLocaleLowerCase();
 	}
 
@@ -69,36 +69,37 @@ clear();
 	// Current page offset height in percentages.
 	function pageYOffsetPercentage() { return Math.round((window.innerHeight + window.pageYOffset) / document.body.offsetHeight * 100); }
 
+	// Get the current media type.
+	function currentMediaType() {
+		return window.location.href.split('/').slice(-1)[0];
+	}
+
 	// Scroll to bottom.
-	function scrollToBottom (scrollIntervalDelayInSeconds, scrollExtentInPercentage = 100, backToTop = true) {
+	function scrollToBottom (scrollIntervalDelayInSeconds = 1, scrollExtentInMinutes = 0) {
+		console.info('⌛ Page scroll in progress...');
+		
+		// Stop scroll early if user specified scroll extent in minutes.
+		let scrollLimitTimer; scrollActive = true;
+		if (scrollExtentInMinutes !== 0) {
+			console.warn(`⚠️ Scrolling for ${currentMediaType()} will not take any longer than ${scrollExtentInMinutes} minute(s) because of the set configuration.`);
+			scrollLimitTimer = setTimeout(() => scrollActive = false, scrollExtentInMinutes * 1000 * 60);
+		}
+
 		let currentPageYOffset = pageYOffsetPercentage();
 		return new Promise (async resolve => {
-			console.info('⌛ Page scroll in progress...'); console.info("⌛", pageYOffsetPercentage() + "%");
-			while (true) {
+			while (scrollActive) {
+				// Scroll down.
 				window.scrollTo(0, document.body.scrollHeight);
-				await freeze(scrollIntervalDelayInSeconds * 1000);
-				const newPageYOffset = pageYOffsetPercentage();
-				// if (scrollExtentInPercentage < newPageYOffset) { break; }
-
-				if (document.getElementsByClassName('b-posts_preloader')[0]) {  // Loading circle-icon.
-					if (Boolean(document.getElementsByClassName('infinite-status-prompt')[0].style[0])) {  // When loading circle is hidden (all content is loaded).
-						break;
-					}
-					console.log('tester 1');
-					continue;
-				}
-
-				if (document.getElementsByClassName('g-btn m-rounded m-block w-100')[0]) {  // Manual load more content button.
-					console.log('tester 2');
-					document.getElementsByClassName('g-btn m-rounded m-block w-100')[0].click();
-					continue;
-				}
-
-				// Load progression.
-				if (currentPageYOffset < newPageYOffset) { currentPageYOffset = newPageYOffset; console.info("⌛", currentPageYOffset + "%"); }
+				await freeze(scrollIntervalDelayInSeconds * 1000 + 1000); // The "+ 1000" is a safety mechanism to make sure the "loading icon" on the page appears.
+				if (window.getComputedStyle(document.getElementsByClassName('infinite-status-prompt')[0]).display !== 'none') { continue; }  // Check if page is still loading for content.
+				if (document.getElementsByClassName('g-btn m-rounded m-block w-100')[0]) { document.getElementsByClassName('g-btn m-rounded m-block w-100')[0].click(); continue; }  // Check if manual load button appeared on the page.
+				const newPageYOffset = pageYOffsetPercentage();  // Get the new Y scroll offset of the page.
+				if (newPageYOffset > currentPageYOffset) { currentPageYOffset = newPageYOffset; continue; }  // Update page Y offset.
+				if (currentPageYOffset !==  100 && newPageYOffset !== 100) { continue; } // Check if page scroll is complete. Continue if not.
+				break;  // Page is done scrolling from 0 to 100.
 			}
-			console.info("⌛", scrollExtentInPercentage + "%");
-			if (backToTop) scroll(0, 0); console.info('✔️ Finished scrolling page.'); resolve(true);
+			clearTimeout(scrollLimitTimer);  // Clear the timeout, content can finish before timer reaches limit.
+			scroll(0, 0); console.info('✔️ Finished scrolling page.'); resolve(true);
 		});
 	}
 
@@ -111,7 +112,7 @@ clear();
 		return new Promise (async resolve => {
 			const media = config[mediaType]; const profileMedia = profiles[username][mediaType];
 			let progress = 0; let currentProgressInPercentage = 0; newProgressInPercentage = 0; let downloaded = 0; media.element().click(); await freeze(1000);
-			await scrollToBottom(config[mediaType].scrollIntervalDelayInSeconds, config[mediaType].scrollExtentInPercentage);
+			await scrollToBottom(config[mediaType].scrollIntervalDelayInSeconds, config[mediaType].scrollExtentInMinutes);
 			firstItem = document.getElementsByClassName('b-photos__item__img')[0]; let msg = "";
 			if (!firstItem) { console.warn(`⚠️ No downloadable ${mediaType}.`); return resolve(true); }
 			firstItem.click(); await freeze(1000);
@@ -121,6 +122,7 @@ clear();
 					currentProgressInPercentage = newProgressInPercentage;
 					console.info(`⌚ [${mediaType.toUpperCase()}]`, currentProgressInPercentage + "%");
 				}
+
 				for (let i = 0; i < media.content().length; i++) {
 					const item = media.source(media.content()[i]); const profileMediaTypeSources = profileMedia.sources;
 					if (item && !profileMediaTypeSources.includes(item)) {
@@ -130,7 +132,7 @@ clear();
 					await freeze(media.iterationSpeedDelayInSeconds * 1000);
 				}
 			}
-			if (config[mediaType].scrollExtentInPercentage !== 100) { console.warn(`⚠️ ${profileMedia.amount - downloaded} undownloaded for ${mediaType} because the max scroll extent for it was set to ${config[mediaType].scrollExtentInPercentage}%.`); }
+			if (config[mediaType].scrollExtentInMinutes !== 0) { console.warn(`⚠️ ${profileMedia.amount - downloaded} undownloaded for ${mediaType} because the max scroll extent for it was set to ${config[mediaType].scrollExtentInMinutes} minutes.`); }
 			else { console.warn(`🔒 ${profileMedia.amount - downloaded} locked/hidden for ${mediaType}.`); }
 			profileMedia.amount = downloaded; resolve(true); 
 		});
@@ -151,6 +153,13 @@ clear();
 		});
 	}
 
+	function downloadContentRequest () {
+		fetch('http://127.0.0.1:5000/download_content', { // Send content to the server for download.
+			method: 'POST', mode: 'cors', headers: { 'Content-Type': 'application/json;charset=utf-8' },
+			body: JSON.stringify({ [username]: profiles[username] })
+		}).then(response => response.text()).then(rv => console.info(rv));
+	}
+
 	// Auto clicker.
 	async function autoClicker() {
 		if (!document.getElementsByClassName('b-tabs__nav__item m-current')[0].firstChild.href.split('/')[4]) {
@@ -158,10 +167,7 @@ clear();
 		} await fetchContent(); await freeze(1000); // Freeze the code so the page can load.
 		document.getElementsByClassName('pswp__button pswp__button--close')[0].click();
 		console.log("↪️ Check the backend code terminal output for the download status.")
-		fetch('http://127.0.0.1:5000/download_content', { // Send content to the server for download.
-			method: 'POST', mode: 'cors', headers: { 'Content-Type': 'application/json;charset=utf-8' },
-			body: JSON.stringify({ [username]: profiles[username] })
-		}).then(response => response.text()).then(rv => console.info(rv));
+		downloadContentRequest();
 	}
 
 	// Execute the code.

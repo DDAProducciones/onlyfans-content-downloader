@@ -45,6 +45,7 @@ Make sure to follow the steps precisely and in chronological order!
 
 3. Select all the Javascript code from the 'fetch_content.js' file (CTRL + A), then copy (CTRL + C) and paste it (CTRL + V) in your web console (SHIFT + CTRL + I) or (F12) and press (ENTER).
 ![JS Code in browser console](https://drive.google.com/uc?export=view&id=12FbB2T47Lbe3h9jbj7Vh6Ix6w_z67EOX)
+⚠️ NOTE: make sure to disable all addons related to blocking, except for adblockers. Examples of browser addons that mess with the code would be "PrivacyBadger", "HTTP://EVERYWHERE", etc.
 
 That's it! The download should now start.
 
