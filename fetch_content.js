@@ -113,7 +113,7 @@ clear();
 			const media = config[mediaType]; const profileMedia = profiles[username][mediaType];
 			let progress = 0; let currentProgressInPercentage = 0; newProgressInPercentage = 0; let downloaded = 0; media.element().click(); await freeze(1000);
 			await scrollToBottom(config[mediaType].scrollIntervalDelayInSeconds, config[mediaType].scrollExtentInMinutes);
-			firstItem = document.getElementsByClassName('b-photos__item__img')[0]; let msg = "";
+			firstItem = document.getElementsByClassName('b-photos__item__img')[0];
 			if (!firstItem) { console.warn(`⚠️ No downloadable ${mediaType}.`); return resolve(true); }
 			firstItem.click(); await freeze(1000);
 			while (profileMedia.amount > progress) {
