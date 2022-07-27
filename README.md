@@ -26,6 +26,7 @@
 - Intelligent. Dynamically executes code-blocks based on the page state instead of a static download order. It takes the most effecient route to download the media files based on where the code is executed from.
 - Shows you the download progression in both the frontend and back-end.
 - Shows how many media files are hidden/locked from you.
+- Tested on a single user with 5.000+ photos and 2.000+ videos.
 
 
 ## dependencies
