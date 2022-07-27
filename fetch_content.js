@@ -13,7 +13,7 @@ clear();
 			'fetch': () => fetchBanner()
 		},
 		'photos': {
-			'download': true,
+			'download': false,
 			'iterationSpeedDelayInSeconds': 0,  // How fast the app will iterate over the media content. 0 means instantly.
 			'scrollIntervalDelayInSeconds': 1,  // The delay time between each scroll interval.
 			'scrollExtentInMinutes': 0, // 0 means download everything.
@@ -145,9 +145,11 @@ clear();
 			if (index !== -1) { [keys[0], keys[index]] = [keys[index], keys[0]]; }
 			for (const o of keys) {
 				if (!config[o].download) continue;
+				const currentMediaElement = config[o].element();
+				if (!currentMediaElement) console.warn(`⚠️ Download process for ${o} skipped because @${username} didn't post any.`);
 				profiles[username][o] = {
 					'sources': [],
-					'amount': parseInt(config[o].element().innerText.replace(/\D/g, '')) || 1
+					'amount': parseInt(currentMediaElement.innerText.replace(/\D/g, ''))
 				}; if (config[o].fetch) await config[o].fetch(o);
 			} resolve(true);
 		});
