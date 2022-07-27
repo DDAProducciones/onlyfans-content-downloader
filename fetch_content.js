@@ -13,7 +13,7 @@ clear();
 			'fetch': () => fetchBanner()
 		},
 		'photos': {
-			'download': true,
+			'download': false,
 			'iterationSpeedDelayInSeconds': 0,  // How fast the app will iterate over the media content. 0 means instantly.
 			'scrollIntervalDelayInSeconds': 1,  // The delay time between each scroll interval.
 			'scrollExtentInMinutes': 0, // 0 means download everything.
@@ -28,7 +28,7 @@ clear();
 		},
 		'videos': {
 			'download': true,
-			'iterationSpeedDelayInSeconds': 0,
+			'iterationSpeedDelayInSeconds': 0.2,
 			'scrollIntervalDelayInSeconds': 0,
 			'scrollExtentInMinutes': 0, // 0 means download everything.
 			'content': () => document.getElementsByClassName('vjs-tech'),
