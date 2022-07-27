@@ -13,7 +13,7 @@ clear();
 			'fetch': () => fetchBanner()
 		},
 		'photos': {
-			'download': false,
+			'download': true,
 			'iterationSpeedDelayInSeconds': 0,  // How fast the app will iterate over the media content. 0 means instantly.
 			'scrollIntervalDelayInSeconds': 1,  // The delay time between each scroll interval.
 			'scrollExtentInMinutes': 0, // 0 means download everything.
@@ -146,7 +146,10 @@ clear();
 			for (const o of keys) {
 				if (!config[o].download) continue;
 				const currentMediaElement = config[o].element();
-				if (!currentMediaElement) console.warn(`⚠️ Download process for ${o} skipped because @${username} didn't post any.`);
+				if (!currentMediaElement) {
+					console.warn(`⚠️ Download process for ${o} skipped because @${username} didn't post any.`);
+					continue;
+				}
 				profiles[username][o] = {
 					'sources': [],
 					'amount': parseInt(currentMediaElement.innerText.replace(/\D/g, ''))
