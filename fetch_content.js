@@ -15,7 +15,7 @@ clear();
 		'photos': {
 			'download': false,
 			'iterationSpeedDelayInSeconds': 0,  // How fast the app will iterate over the media content. 0 means instantly.
-			'scrollIntervalDelayInSeconds': 1,  // The delay time between each scroll interval.
+			'scrollIntervalDelayInSeconds': 0,  // The delay time between each scroll interval.
 			'scrollExtentInMinutes': 0, // 0 means download everything.
 			'content': () => document.getElementsByClassName('pswp__img'), // The currently opened grid photo.
 			'source': element => element.src, 
