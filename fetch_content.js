@@ -27,7 +27,7 @@ clear();
 			}
 		},
 		'videos': {
-			'download': true,
+			'download': false,
 			'iterationSpeedDelayInSeconds': 0.2,
 			'scrollIntervalDelayInSeconds': 0,
 			'scrollExtentInMinutes': 0, // 0 means download everything.
@@ -91,7 +91,10 @@ clear();
 				// Scroll down.
 				window.scrollTo(0, document.body.scrollHeight);
 				await freeze(scrollIntervalDelayInSeconds * 1000 + 1000); // The "+ 1000" is a safety mechanism to make sure the "loading icon" on the page appears.
-				if (window.getComputedStyle(document.getElementsByClassName('infinite-status-prompt')[0]).display !== 'none') { continue; }  // Check if page is still loading for content.
+				const infiniteStatusPrompt = document.getElementsByClassName('infinite-status-prompt')[0];
+        if (infiniteStatusPrompt) {
+          if (window.getComputedStyle(document.getElementsByClassName('infinite-status-prompt')[0]).display !== 'none') { continue; }  // Check if page is still loading for content.
+        }
 				if (document.getElementsByClassName('g-btn m-rounded m-block w-100')[0]) { document.getElementsByClassName('g-btn m-rounded m-block w-100')[0].click(); continue; }  // Check if manual load button appeared on the page.
 				const newPageYOffset = pageYOffsetPercentage();  // Get the new Y scroll offset of the page.
 				if (newPageYOffset > currentPageYOffset) { currentPageYOffset = newPageYOffset; continue; }  // Update page Y offset.
@@ -103,9 +106,16 @@ clear();
 		});
 	}
 
-    // Fetch avatar/banner.
-	function fetchAvatar () { profiles[username].avatar.sources.push(config.avatar.element().firstChild.src.replace('thumbs/c144/', '')); }
-	function fetchBanner () { profiles[username].banner.sources.push(config.banner.element().src.replace('thumbs/w480/', '')); }
+  // Fetch avatar/banner.
+	function fetchAvatar () { 
+    const avatarImage = config.avatar.element().outerHTML.match(/(((https?:\/\/)|(www\.))[^\s]+)/g)[0].replace('\"', '').replace('thumbs/c144/', '');
+    profiles[username].avatar.sources.push(avatarImage)
+    profiles[username].avatar.amount = 1;
+  }
+	function fetchBanner () {
+    profiles[username].banner.sources.push(config.banner.element().src.replace('thumbs/w480/', ''));
+    profiles[username].banner.amount = 1;
+  }
 
 	// Fetch photo/video.
 	function loadPhotoVideo(mediaType) {
@@ -132,7 +142,7 @@ clear();
 					await freeze(media.iterationSpeedDelayInSeconds * 1000);
 				}
 			}
-			if (config[mediaType].scrollExtentInMinutes !== 0) { console.warn(`⚠️ ${profileMedia.amount - downloaded} undownloaded for ${mediaType} because the max scroll extent for it was set to ${config[mediaType].scrollExtentInMinutes} minutes.`); }
+			if (config[mediaType].scrollExtentInMinutes !== 0) { console.warn(`⚠️ ${profileMedia.amount - downloaded} not downloaded for ${mediaType} because the max scroll extent for it was set to ${config[mediaType].scrollExtentInMinutes} minutes.`); }
 			else { console.warn(`🔒 ${profileMedia.amount - downloaded} locked/hidden for ${mediaType}.`); }
 			profileMedia.amount = downloaded; resolve(true); 
 		});
@@ -159,7 +169,7 @@ clear();
 	}
 
 	function downloadContentRequest () {
-		fetch('http://127.0.0.1:5000/download_content', { // Send content to the server for download.
+		fetch('http://127.0.0.1:5224/download_content', { // Send content to the server for download.
 			method: 'POST', mode: 'cors', headers: { 'Content-Type': 'application/json;charset=utf-8' },
 			body: JSON.stringify({ [username]: profiles[username] })
 		}).then(response => response.text()).then(rv => console.info(rv));

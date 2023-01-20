@@ -17,13 +17,13 @@
 - Effectively and efficiently downloads the user's content by only downloading media files that you don't have yet.
 - Automatically creates a nicely structured and categorized download-folder named 'subscriptions'.
 - Downloads the user's avatar and header image/photo in raw resolution.
-- Downloads differently from alternative OnlyFans-content scrapers/downloaders, by simulating an actual user.
+- Downloads differently from alternative OnlyFans-content scrapers, by simulating an actual user.
 - Almost no maintenance required unlike other scrapers, because of the unique way that the content is scraped.
 - Less dependencies required in comparison to other scrapers.
 - Less code than alternative scrapers.
 - No cookie, session, login or other information required unlike other scrapers.
 - Easy to use, easy to set up, and user-friendly.
-- Intelligent. Dynamically executes code-blocks based on the page state instead of a static download order. It takes the most effecient route to download the media files based on where the code is executed from.
+- Intelligent. Dynamically executes code-blocks based on the page state instead of a static download order. It takes the most efficient route to download the media files based on where the code is executed from.
 - Shows you the download progression in both the frontend and back-end.
 - Shows how many media files are hidden/locked from you.
 - Tested on a single user with 5.000+ photos and 2.000+ videos.
@@ -41,27 +41,29 @@ Make sure to follow the steps precisely and in chronological order!
 1. Open the project folder in VSCode, then left-click the Python file and then right-click "Run Python File in Terminal".
 ![Run code in VSCode](https://drive.google.com/uc?export=view&id=12YdOUjuLHzQiBIVAHr9WeUCgm2NxHWK5)
 
-2. Go to the Onlyfans profile you wish to download from via your browser (e.g.: https://onlyfans.com/username_of_creator).
+2. Go to the OnlyFans profile you wish to download from via your browser (e.g.: https://onlyfans.com/username_of_creator).
 ![OF user page](https://drive.google.com/uc?export=view&id=17AXfRJEf8_dL875Ic7NJ-cZnAwK7pX67)
 
-3. Select all the Javascript code from the 'fetch_content.js' file (CTRL + A), then copy (CTRL + C) and paste it (CTRL + V) in your web console (SHIFT + CTRL + I) or (F12) and press (ENTER).
+3. Select all the JavaScript code from the 'fetch_content.js' file (CTRL + A), then copy (CTRL + C) and paste it (CTRL + V) in your web console (SHIFT + CTRL + I) or (F12) and press (ENTER).
 ![JS Code in browser console](https://drive.google.com/uc?export=view&id=12FbB2T47Lbe3h9jbj7Vh6Ix6w_z67EOX)
-⚠️ NOTE: make sure to disable all addons related to blocking, except for adblockers. Examples of browser addons that mess with the code would be "PrivacyBadger", "HTTP://EVERYWHERE", etc.
+⚠️ NOTE: make sure to disable all addons related to blocking, except for ad blockers. Examples of browser addons that mess with the code would be "PrivacyBadger", "HTTP://EVERYWHERE", etc.
 
 That's it! The download should now start.
 
 
 ## js-configurations
-The JS code of this app provides configurations, so that the download proces can be adjusted/altered to more specific needs. See the table below which explains the various configurations you can specify for the app. You can also leave the configuration as is, in that case, the app will use the default values. These configurations can be specified for each content type for an even more specific download configuration.
+The JS code of this app provides configurations, so that the download process can be adjusted/altered to more specific needs. See the table below which explains the various configurations you can specify for the app. You can also leave the configuration as is, in that case, the app will use the default values. These configurations can be specified for each content type for an even more specific download configuration.
 | Name | Type | Default | Description |
 | ------ | ------ | ------ | ------ |
 | `download` | boolean | true | `true` allows certain or all content to be downloaded. In contrast, `false` will disallow it. The content types are `avatar`, `banner`, `photos`, `videos`, `archived`. E.g. setting the `download` value for `videos` to `false`, would disallow any videos to be downloaded. |
-| `iterationSpeedDelayInSeconds` | integer | 0 | `0` delays the iteration speed over the media files (e.g. the photos and videos) by zero seconds. How higher the number (in seconds), how slower the iteration proces happens. Slowing this proces down can be useful if media files fail to load before iteration occurs. Might occur with poor server response times, bandwidth, internet connection, PC speed, browser addons, etc. Do not touch this configuration if you do not encounter issues. |
+| `iterationSpeedDelayInSeconds` | integer | 0 | `0` delays the iteration speed over the media files (e.g. the photos and videos) by zero seconds. How higher the number (in seconds), how slower the iteration process happens. Slowing this process down can be useful if media files fail to load before iteration occurs. Might occur with poor server response times, bandwidth, internet connection, PC speed, browser addons, etc. Do not touch this configuration if you do not encounter issues. |
 | `scrollIntervalDelayInSeconds` | integer | 3 | Delays each scroll to the bottom of the page by `3` seconds. This number depends on how fast the page loads on your machine. How higher the number, how longer each interval is delayed. This is useful on machines that need more time to load the content. In contrast, lowering the number speeds up the scrolling process. This can be risky because if the browser is not able to load all the next scrolled media files, then your download will be incomplete. On the other side, if you machine is able to load the media files fast, then you might want to consider lowering this number to save yourself time. `0` disables the delay altogether.|
 | `scrollExtentInPercentage` | integer | 100 | `100` means 100% (percent). Allows you to download only a portion of the user's media files. E.g. `50` would mean, that the code will download up to 50% of the page content. `100` means 100%, to download all media files. This configuration is useful if you just want the latest uploads from a certain user instead of having to iterate over all the media files again. It allows you to save yourself time.|
 
 
-# deficiencies
+# notes
 The following list does not impact the actual functionality. This means that all the content will still downloads as intended. Consider these minor issues that only affect the user experience at minimal.
-1. JS code is unnecessarily iterating over content that has already been visited. Does not impact the download process, just makes you wait longer. An estimation of the delay could be: if you were to download 50 photos, each photo taking 0,2 seconds: 50 * 0,2 = 10 seconds of download time (100%). In worst case scenario, each photo is iterated three times: 50 * 3 * 0,2 = 30 seconds of download time (300%).
-2. The program does not check how much storage capacity is available on your local machine. If you have 10Mb of available storage left and 1GB of content to download, well, then the program will crash when full storage capacity is reached.
+1. JS code is unnecessarily iterating over content that has already been visited. Does not impact the download process, just makes you wait longer. An estimation of the delay could be: if you were to download 50 photos, each photo taking 0,2 seconds: 50 * 0,2 = 10 seconds of download time (100%). In worst case scenario, each photo is iterated three times: 50 * 3 * 0,2 = 30 seconds of download time (300%). I do not have plans as of now to improve this.
+2. The program does not check how much storage capacity is available on your local machine. If you have 10Mb of available storage left and 1GB of content to download, well, then the program will crash when full storage capacity is reached. I do not have plans as of now to fix this.
+3. Media content is not fully downloaded in rare cases and console info is sometimes incorrect because of this. Sometimes, content creators upload media content under the same file name, the code sees this as duplicated files, but that is not always the case. I will work on a fix for this when I have time.
+
